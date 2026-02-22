@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { Navbar } from "components/navbar/Navbar";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -32,10 +33,34 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+      <body className="antialiased selection:bg-[#7f0df2] selection:text-white">
+        <div className="bg-[#050505] text-white min-h-screen relative overflow-x-hidden">
+          {/* Particle/Star Layer */}
+          <div
+            className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at center, white 1px, transparent 1px)",
+              backgroundSize: "24px 24px",
+            }}
+          ></div>
+
+          {/* Gradient Overlays for depth */}
+          <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-[#12081F] via-[#050505]/0 to-transparent"></div>
+          <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_bottom_right,var(--tw-gradient-stops))] from-[#12081F] via-[#050505]/0 to-transparent"></div>
+
+          {/* Neon Glows */}
+          <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-[#7f0df2] rounded-full mix-blend-screen filter blur-[150px] opacity-20 pointer-events-none z-0"></div>
+          <div className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-cyan-500 rounded-full mix-blend-screen filter blur-[150px] opacity-[0.15] pointer-events-none z-0"></div>
+
+          <main className="relative z-10 pt-5">
+            <Navbar />
+            <div className="py-16">{children}</div>
+          </main>
+
+          <ScrollRestoration />
+          <Scripts />
+        </div>
       </body>
     </html>
   );
