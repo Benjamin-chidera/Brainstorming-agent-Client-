@@ -22,8 +22,8 @@ export default function Home() {
         <Hero />
       </section>
 
-      <section className="glass w-[896px] h-[267px] rounded-xl mx-auto mt-20 relative">
-        <div className="h-[42px] px-10 mx-auto flex items-center justify-between pt-8">
+      <section className="glass w-11/12 lg:w-4xl h-66.75 rounded-xl mx-auto mt-20 relative">
+        <div className="h-10.5 md:px-10 px-3 mx-auto flex items-center justify-between pt-8">
           <div className="flex items-center gap-4">
             <div>
               <svg
@@ -47,10 +47,10 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <p className="text-sm font-semibold whitespace-nowrap">
+              <p className="md:text-sm text-xs font-semibold whitespace-nowrap">
                 Council Feedback Loop{" "}
               </p>
-              <p className="text-sm text-[#94A3B8] whitespace-nowrap">
+              <p className="md:text-sm text-[10px]  text-[#94A3B8] whitespace-nowrap">
                 Processing active strategy session...{" "}
               </p>
             </div>
@@ -58,7 +58,7 @@ export default function Home() {
 
           <div className="flex items-center gap-0">
             <Dot size={40} color="#10B981" />
-            <p className="text-xs whitespace-nowrap text-[#10B981]">
+            <p className="md:text-xs hidden md:block whitespace-nowrap text-[#10B981]">
               Live Analysis
             </p>
           </div>
@@ -67,11 +67,11 @@ export default function Home() {
         <div className="absolute bottom-8 left-0 w-full px-8">
           <div className="bg-[#FFFFFF] opacity-15 w-full h-0.5 mx-auto" />
 
-          <div className="flex items-center justify-between pt-6">
+          <div className="flex flex-wrap gap-3 items-center justify-between pt-6">
             {macrketText.map((text, index) => (
               <div key={index} className="flex items-center gap-4">
                 <CheckCircle size={20} color="#10B981" />
-                <p className="text-xs whitespace-nowrap text-[#10B981]">
+                <p className="md:text-xs text-[8px] whitespace-nowrap text-[#10B981]">
                   {text}
                 </p>
               </div>

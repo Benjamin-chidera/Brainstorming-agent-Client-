@@ -5,18 +5,18 @@ export const BottleNeckOfAI = () => {
     <main>
       {" "}
       <section className="glass w-full h-[583px] mt-10 py-24">
-        <h2 className=" text-center font-bold text-5xl">
+        <h2 className=" text-center font-bold text-4xl">
           The <span className="text-[#F87171]">Bottleneck</span> of Single AI
         </h2>
 
-        <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto text-center mt-10">
+        <p className="text-sm text-[#94A3B8] max-w-xl mx-auto text-center mt-5">
           Standard LLMs are powerful but prone to tunnel vision. One model means
           one perspective, one bias, and one point of failure.
         </p>
 
-        <section className=" w-[1232px] mx-auto mt-20 flex gap-10 items-center">
+        <section className=" container mx-auto mt-20 flex gap-10 items-center justify-center">
           {/* echo chamber */}
-          <div className="glass h-[223px] w-[389px] rounded-4xl p-7">
+          <div className="glass h-[160px] w-[389px] rounded-4xl p-5">
             <div className="flex items-center gap-2">
               <svg
                 width="30"
@@ -32,15 +32,15 @@ export const BottleNeckOfAI = () => {
               </svg>
             </div>
 
-            <h3 className="text-2xl font-bold mt-5">Echo Chambers</h3>
-            <p className="text-sm text-[#94A3B8] mt-5">
+            <h3 className="text-xl font-bold mt-3">Echo Chambers</h3>
+            <p className="text-xs text-[#94A3B8] mt-3">
               Single models often double down on their own biases without a
               secondary 'voice' to provide correction or nuance.
             </p>
           </div>
 
           {/* unchecked hallucinations */}
-          <div className="glass h-[223px] w-[389px] rounded-4xl p-7">
+          <div className="glass h-[160px] w-[389px] rounded-4xl p-5">
             <div className="flex items-center gap-2">
               <svg
                 width="27"
@@ -56,17 +56,15 @@ export const BottleNeckOfAI = () => {
               </svg>
             </div>
 
-            <h3 className="text-2xl font-bold mt-5">
-              Unchecked Hallucinations
-            </h3>
-            <p className="text-sm text-[#94A3B8] mt-5">
+            <h3 className="text-xl font-bold mt-3">Unchecked Hallucinations</h3>
+            <p className="text-xs text-[#94A3B8] mt-3">
               Without cross-verification, fictional data is often presented as
               fact, leading to dangerous strategic errors.
             </p>
           </div>
 
           {/* unchecked hallucinations */}
-          <div className="glass h-[223px] w-[389px] rounded-4xl p-7">
+          <div className="glass h-[160px] w-[389px] rounded-4xl p-5">
             <div className="flex items-center gap-2">
               <svg
                 width="33"
@@ -82,8 +80,8 @@ export const BottleNeckOfAI = () => {
               </svg>
             </div>
 
-            <h3 className="text-2xl font-bold mt-5">Narrow Perspective</h3>
-            <p className="text-sm text-[#94A3B8] mt-3">
+            <h3 className="text-xl font-bold mt-3">Narrow Perspective</h3>
+            <p className="text-xs text-[#94A3B8] mt-3">
               Broad models lack the deep domain mastery required for complex
               regulatory or financial strategic planning.
             </p>

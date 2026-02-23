@@ -2,20 +2,21 @@ import React from 'react'
 
 export const MultiAgentSection = () => {
   return (
-     <section className=" mt-32 flex items-center justify-between gap-20">
+     <section className="mt-17 lg:mt-32 lg:flex items-center justify-between gap-20">
         <div>
-          <h1 className="font-bold text-3xl">
+          <h1 className="font-bold text-2xl">
             Why <span className="text-[#7F0DF2]"> Multi-Agent</span> Systems?
           </h1>
-          <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto mt-5">
+          <p className="text-sm text-[#94A3B8] max-w-lg mt-5">
             In the real world, no CEO makes decisions in a vacuum. They rely on
             a council of experts. We've brought this same philosophy to AI.
           </p>
+
           <div className=" space-y-7 mt-6">
-            <div className="glass w-[584px] h-[118px] rounded-2xl p-5 flex items-start gap-3">
+            <div className="glass lg:w-125 h-25 rounded-2xl p-5 flex items-start gap-3">
               <div>
                 <svg
-                  width="30"
+                  width="30"  
                   height="28"
                   viewBox="0 0 30 28"
                   fill="none"
@@ -29,17 +30,17 @@ export const MultiAgentSection = () => {
               </div>
 
               <div>
-                <h1 className="text-white text-xl font-bold">
+                <h1 className="text-white text-lg font-bold">
                   Parallel Processing
                 </h1>
-                <p className="text-[#94A3B8] text-sm">
+                <p className="text-[#94A3B8] text-xs">
                   Dozens of specialized agents work simultaneously, debating and
                   refining outcomes in real-time.
                 </p>
               </div>
             </div>
 
-            <div className="glass w-[584px] h-[118px] rounded-2xl p-5 flex items-start gap-3">
+            <div className="glass lg:w-125 h-25 rounded-2xl p-5 flex items-start gap-3">
               <div>
                 <svg
                   width="24"
@@ -56,10 +57,10 @@ export const MultiAgentSection = () => {
               </div>
 
               <div>
-                <h1 className="text-white text-xl font-bold">
+                <h1 className="text-white text-lg font-bold">
                   Specialized Domains{" "}
                 </h1>
-                <p className="text-[#94A3B8] text-sm">
+                <p className="text-[#94A3B8] text-xs">
                   From legal analysis to market sentiment, each agent is
                   fine-tuned for a specific vertical.
                 </p>
@@ -69,7 +70,7 @@ export const MultiAgentSection = () => {
         </div>
 
         <div
-          className="w-[804px] h-[600px] bg-cover bg-center bg-no-repeat rounded-3xl"
+          className="w-201 lg:block hidden h-150 bg-cover bg-center bg-no-repeat rounded-3xl"
           style={{ backgroundImage: "url('/multi-agent-pick.png')" }}
         ></div>
       </section>

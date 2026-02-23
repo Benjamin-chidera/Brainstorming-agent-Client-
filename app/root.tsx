@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Navbar } from "components/navbar/Navbar";
+import { Auth } from "components/auth/auth";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -56,6 +57,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <main className="relative z-10 pt-5">
             <Navbar />
             <div className="py-16">{children}</div>
+            {/* this is for the auth modal */}
+            <Auth />
           </main>
 
           <ScrollRestoration />

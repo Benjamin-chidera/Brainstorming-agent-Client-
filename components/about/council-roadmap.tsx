@@ -2,16 +2,16 @@ import React from "react";
 
 export const CouncilRoadmap = () => {
   return (
-    <main className=" mt-20 w-[1232px] mx-auto">
-      <h1 className="text-5xl font-bold text-center">
+    <main className=" mt-20 container mx-auto">
+      <h1 className="text-4xl font-bold text-center">
         The <span className="text-[#7F0DF2]">Council</span> Roadmap
       </h1>
 
-      <p className="text-center text-lg text-[#94A3B8] mt-5">
+      <p className="text-center text-sm text-[#94A3B8] mt-3">
         Building the future of orchestrated intelligence, step by step.
       </p>
 
-      <section className="flex justify-between items-center mt-20">
+      <section className="flex justify-center items-center mt-15 gap-10">
         {/* q1 */}
         <div>
           <div>
@@ -31,7 +31,7 @@ export const CouncilRoadmap = () => {
           </div>
 
           <div className="glass h-[130px] w-[284px] p-5 mt-10 rounded-4xl">
-            <h1 className="text-xl font-bold">Agent Synthesis Engine</h1>
+            <h1 className="text-lg font-bold">Agent Synthesis Engine</h1>
 
             <p className="text-[#94A3B8] mt-2 text-xs">
               Core logic for inter-agent communication and consensus-building
@@ -59,7 +59,7 @@ export const CouncilRoadmap = () => {
           </div>
 
           <div className="glass h-[130px] w-[284px] p-5 mt-10 rounded-4xl">
-            <h1 className="text-xl font-bold">Sector Specializations</h1>
+            <h1 className="text-lg font-bold">Sector Specializations</h1>
 
             <p className="text-[#94A3B8] mt-2 text-xs">
               Launch of the Healthcare, Legal, and FinTech specialized Council
@@ -87,7 +87,7 @@ export const CouncilRoadmap = () => {
           </div>
 
           <div className="glass h-[130px] w-[284px] p-5 mt-10 rounded-4xl">
-            <h1 className="text-xl font-bold">Private Edge Nodes</h1>
+            <h1 className="text-lg font-bold">Private Edge Nodes</h1>
 
             <p className="text-[#94A3B8] mt-2 text-xs">
               On-premise deployment for enterprise- grade security and
@@ -125,7 +125,7 @@ export const CouncilRoadmap = () => {
           </div>
 
           <div className="glass h-[130px] w-[284px] p-5 mt-10 rounded-4xl">
-            <h1 className="text-xl font-bold">Autonomous Governance</h1>
+            <h1 className="text-lg font-bold">Autonomous Governance</h1>
 
             <p className="text-[#94A3B8] mt-2 text-xs">
               Self-optimizing agent pools that adapt to user feedback cycles

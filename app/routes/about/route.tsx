@@ -14,7 +14,7 @@ export default function About() {
   return (
     <main>
       <section>
-        <div className="glass w-[228px] h-[34px] rounded-full flex items-center justify-center gap-2 mx-auto text-[#7F0DF2] font-semibold uppercase">
+        <div className="glass w-55 h-8.5 rounded-full flex items-center justify-center gap-2 mx-auto text-[#7F0DF2] font-semibold uppercase">
           <svg
             width="13"
             height="13"
@@ -28,16 +28,16 @@ export default function About() {
             />
           </svg>
 
-          <p className=" text-sm">The Future of Strategy</p>
+          <p className=" text-xs">The Future of Strategy</p>
         </div>
 
         <section>
-          <h1 className="text-7xl font-bold max-w-4xl mx-auto text-center mt-10">
+          <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold max-w-4xl mx-auto text-center mt-10">
             Democratizing Strategy Through{" "}
             <span className="text-[#7F0DF2]">Collective Intelligence</span>
           </h1>
 
-          <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto text-center mt-10">
+          <p className="text-xs md:text-sm text-[#94A3B8] max-w-sm lg:max-w-xl mx-auto text-center mt-10">
             In the past, strategic planning was the exclusive domain of
             expensive consulting firms and senior executives. We’re changing
             that. By leveraging a distributed network of specialized AI agents,
@@ -46,7 +46,7 @@ export default function About() {
           </p>
         </section>
       </section>
-      <div className="w-[1232px] mx-auto">
+      <div className="2xl:container w-11/12 mx-auto">
         <MultiAgentSection />
       </div>
       {/* bottle neck of ai */}

@@ -3,7 +3,7 @@ import React from "react";
 export const Ethics = () => {
   return (
     <main>
-      <section className="w-[896px] h-[438px] glass mx-auto rounded-3xl mt-40 flex justify-center flex-col items-center">
+      <section className="w-[896px] h-[438px] glass mx-auto rounded-3xl mt-30 flex justify-center flex-col items-center">
         <svg
           width="32"
           height="40"
