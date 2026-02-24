@@ -1,4 +1,4 @@
-import { Hero } from "components/hero/Hero";
+import { Hero } from "~/components/hero/Hero";
 import type { Route } from "./+types/_index";
 import { Check, CheckCircle, Dot } from "lucide-react";
 

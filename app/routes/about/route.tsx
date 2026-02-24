@@ -1,10 +1,10 @@
 import React from "react";
 import type { Route } from "./+types/route";
-import { MultiAgentSection } from "components/about/multi-agent-section";
-import { BottleNeckOfAI } from "components/about/bottle-neck-ai";
-import { CeoPic } from "components/about/ceo-pic";
-import { CouncilRoadmap } from "components/about/council-roadmap";
-import { Ethics } from "components/about/ethics";
+import { MultiAgentSection } from "~/components/about/multi-agent-section";
+import { BottleNeckOfAI } from "~/components/about/bottle-neck-ai";
+import { CeoPic } from "~/components/about/ceo-pic";
+import { CouncilRoadmap } from "~/components/about/council-roadmap";
+import { Ethics } from "~/components/about/ethics";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "About" }, { name: "description", content: "About page" }];
