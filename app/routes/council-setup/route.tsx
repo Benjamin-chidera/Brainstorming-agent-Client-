@@ -28,7 +28,7 @@ export default function CouncilSetup() {
         <p className=" text-xs">Configuration Module</p>
       </div>
       <div className="my-7 space-y-3">
-        <h1 className="text-4xl md:text-5xl xl:text-7xl font-bold text-white">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mt-6">
           Configure Your <span className="text-[#7F0DF2]">Council.</span>
         </h1>
         <p className="text-gray-400 text-sm max-w-md">

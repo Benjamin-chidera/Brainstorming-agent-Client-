@@ -17,7 +17,7 @@ export const Hero = () => {
           </p>
         </div>
 
-        <h1 className="font-bold text-4xl md:text-5xl xl:text-7xl text-white mt-6 leading-tight ">
+        <h1 className="font-bold text-4xl md:text-5xl text-white mt-6 leading-tight ">
           Build Your Own <br />
           <span className="text-[#7F0DF2]">
             AI Strategy <br />
@@ -25,7 +25,7 @@ export const Hero = () => {
           </span>
         </h1>
 
-        <h3 className="text-xs max-w-80  md:max-w-md md:text-sm text-[#94A3B8] mt-3">
+        <h3 className="text-xs  max-w-80  md:max-w-md md:text-sm text-[#94A3B8] mt-3">
           Assemble a council of specialized AI agents to refine your vision,
           analyze risks, and execute your strategy with precision.
         </h3>

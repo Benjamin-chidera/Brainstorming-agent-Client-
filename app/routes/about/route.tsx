@@ -32,7 +32,7 @@ export default function About() {
         </div>
 
         <section className="2xl:container w-11/12 mx-auto">
-          <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold max-w-xl lg:max-w-4xl mx-auto text-center mt-10">
+          <h1 className="text-4xl md:text-5xl font-bold max-w-xl lg:max-w-4xl mx-auto text-center mt-10">
             Democratizing Strategy Through{" "}
             <span className="text-[#7F0DF2]">Collective Intelligence</span>
           </h1>
