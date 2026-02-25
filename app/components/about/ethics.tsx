@@ -3,24 +3,26 @@ import React from "react";
 export const Ethics = () => {
   return (
     <main>
-      <section className="w-[896px] h-[438px] glass mx-auto rounded-3xl mt-30 flex justify-center flex-col items-center">
-        <svg
-          width="32"
-          height="40"
-          viewBox="0 0 32 40"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M13.9 27.1L25.2 15.8L22.35 12.95L13.9 21.4L9.7 17.2L6.85 20.05L13.9 27.1V27.1M16 40C11.3667 38.8333 7.54167 36.175 4.525 32.025C1.50833 27.875 0 23.2667 0 18.2V6L16 0L32 6V18.2C32 23.2667 30.4917 27.875 27.475 32.025C24.4583 36.175 20.6333 38.8333 16 40V40M16 35.8C19.4667 34.7 22.3333 32.5 24.6 29.2C26.8667 25.9 28 22.2333 28 18.2V8.75L16 4.25L4 8.75V18.2C4 22.2333 5.13333 25.9 7.4 29.2C9.66667 32.5 12.5333 34.7 16 35.8V35.8M16 20V20V20V20V20V20V20V20V20V20"
-            fill="#7F0DF2"
-          />
-        </svg>
+      <section className="lg:w-[896px] w-11/12  glass mx-auto rounded-3xl lg:mt-30 mt-15 flex justify-center flex-col items-center">
+        <div className="mt-9 lg:mt-0">
+          <svg
+            width="32"
+            height="40"
+            viewBox="0 0 32 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13.9 27.1L25.2 15.8L22.35 12.95L13.9 21.4L9.7 17.2L6.85 20.05L13.9 27.1V27.1M16 40C11.3667 38.8333 7.54167 36.175 4.525 32.025C1.50833 27.875 0 23.2667 0 18.2V6L16 0L32 6V18.2C32 23.2667 30.4917 27.875 27.475 32.025C24.4583 36.175 20.6333 38.8333 16 40V40M16 35.8C19.4667 34.7 22.3333 32.5 24.6 29.2C26.8667 25.9 28 22.2333 28 18.2V8.75L16 4.25L4 8.75V18.2C4 22.2333 5.13333 25.9 7.4 29.2C9.66667 32.5 12.5333 34.7 16 35.8V35.8M16 20V20V20V20V20V20V20V20V20V20"
+              fill="#7F0DF2"
+            />
+          </svg>
+        </div>
 
         <p className=" text-2xl font-semibold mt-6">Our Commitment to Ethics</p>
 
         {/* grid */}
-        <section className="grid grid-cols-2 gap-7 mt-10">
+        <section className="grid grid-cols-2 gap-7 mt-10 p-5 lg:p-0">
           {/* 1 */}
           <div>
             <div className="flex items-center gap-2">

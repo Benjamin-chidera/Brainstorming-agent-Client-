@@ -2,7 +2,7 @@ import React from "react";
 import type { Route } from "./+types/route";
 import { MultiAgentSection } from "~/components/about/multi-agent-section";
 import { BottleNeckOfAI } from "~/components/about/bottle-neck-ai";
-import { CeoPic } from "~/components/about/ceo-pic";
+import { CeoPic } from "~/components/about/team-pic";
 import { CouncilRoadmap } from "~/components/about/council-roadmap";
 import { Ethics } from "~/components/about/ethics";
 
@@ -13,7 +13,7 @@ export function meta({}: Route.MetaArgs) {
 export default function About() {
   return (
     <main>
-      <section>
+      <section className="mt-10">
         <div className="glass w-55 h-8.5 rounded-full flex items-center justify-center gap-2 mx-auto text-[#7F0DF2] font-semibold uppercase">
           <svg
             width="13"
@@ -31,8 +31,8 @@ export default function About() {
           <p className=" text-xs">The Future of Strategy</p>
         </div>
 
-        <section>
-          <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold max-w-4xl mx-auto text-center mt-10">
+        <section className="2xl:container w-11/12 mx-auto">
+          <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold max-w-xl lg:max-w-4xl mx-auto text-center mt-10">
             Democratizing Strategy Through{" "}
             <span className="text-[#7F0DF2]">Collective Intelligence</span>
           </h1>

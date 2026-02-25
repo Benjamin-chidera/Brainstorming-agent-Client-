@@ -3,9 +3,9 @@ import React from "react";
 export const CeoPic = () => {
   return (
     <main>
-      <section className=" container mx-auto flex items-center gap-10 mt-32 glass rounded-4xl justify-between">
+      <section className=" container mx-auto flex flex-col lg:flex-row items-center gap-10 lg:mt-32 mt-10 glass rounded-4xl justify-between">
         <div className="p-7">
-          <h1 className="text-4xl font-bold max-w-2xl mx-auto mt-10 italic">
+          <h1 className="text-4xl font-bold max-w-2xl mx-auto lg:mt-10 mt-5 italic">
             "We didn't need a smarter model. We needed a better{" "}
             <span className="text-[#7F0DF2]">structure</span>."
           </h1>

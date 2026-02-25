@@ -11,7 +11,7 @@ export default function CouncilSetup() {
   return (
     <main className="2xl:container w-11/12 mx-auto">
       {" "}
-      <div className="glass w-56 h-8.5 rounded-full flex items-center justify-center gap-2 text-[#7F0DF2] font-semibold uppercase">
+      <div className="glass w-56 h-8.5 rounded-full flex items-center justify-center gap-2 text-[#7F0DF2] font-semibold uppercase mt-10">
         <svg
           width="13"
           height="13"
@@ -28,7 +28,7 @@ export default function CouncilSetup() {
         <p className=" text-xs">Configuration Module</p>
       </div>
       <div className="my-7 space-y-3">
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-4xl md:text-5xl xl:text-7xl font-bold text-white">
           Configure Your <span className="text-[#7F0DF2]">Council.</span>
         </h1>
         <p className="text-gray-400 text-sm max-w-md">

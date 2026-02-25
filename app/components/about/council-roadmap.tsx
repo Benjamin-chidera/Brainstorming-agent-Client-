@@ -2,16 +2,16 @@ import React from "react";
 
 export const CouncilRoadmap = () => {
   return (
-    <main className=" mt-20 container mx-auto">
-      <h1 className="text-4xl font-bold text-center">
+    <main className=" mt-20 2xl:container w-11/12 mx-auto">
+      <h1 className="lg:text-4xl text-2xl font-bold text-center">
         The <span className="text-[#7F0DF2]">Council</span> Roadmap
       </h1>
 
-      <p className="text-center text-sm text-[#94A3B8] mt-3">
+      <p className="md:text-sm text-xs text-center text-[#94A3B8] mt-3">
         Building the future of orchestrated intelligence, step by step.
       </p>
 
-      <section className="flex justify-center items-center mt-15 gap-10">
+      <section className="flex flex-wrap justify-center items-center mt-15 gap-10">
         {/* q1 */}
         <div>
           <div>
@@ -30,7 +30,7 @@ export const CouncilRoadmap = () => {
             </svg>
           </div>
 
-          <div className="glass h-[130px] w-[284px] p-5 mt-10 rounded-4xl">
+          <div className="glass h-[130px] w-[284px] p-5 lg:mt-10 mt-5 rounded-4xl">
             <h1 className="text-lg font-bold">Agent Synthesis Engine</h1>
 
             <p className="text-[#94A3B8] mt-2 text-xs">
@@ -58,7 +58,7 @@ export const CouncilRoadmap = () => {
             </svg>
           </div>
 
-          <div className="glass h-[130px] w-[284px] p-5 mt-10 rounded-4xl">
+          <div className="glass h-[130px] w-[284px] p-5 lg:mt-10 mt-5 rounded-4xl">
             <h1 className="text-lg font-bold">Sector Specializations</h1>
 
             <p className="text-[#94A3B8] mt-2 text-xs">
@@ -86,7 +86,7 @@ export const CouncilRoadmap = () => {
             </svg>
           </div>
 
-          <div className="glass h-[130px] w-[284px] p-5 mt-10 rounded-4xl">
+          <div className="glass h-[130px] w-[284px] p-5 lg:mt-10 mt-5 rounded-4xl">
             <h1 className="text-lg font-bold">Private Edge Nodes</h1>
 
             <p className="text-[#94A3B8] mt-2 text-xs">
@@ -124,7 +124,7 @@ export const CouncilRoadmap = () => {
             </svg>
           </div>
 
-          <div className="glass h-[130px] w-[284px] p-5 mt-10 rounded-4xl">
+          <div className="glass h-[130px] w-[284px] p-5 lg:mt-10 mt-5 rounded-4xl">
             <h1 className="text-lg font-bold">Autonomous Governance</h1>
 
             <p className="text-[#94A3B8] mt-2 text-xs">

@@ -2,8 +2,11 @@ import React from "react";
 import "./hero.css";
 import { Dot, MoveRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { useNavigate } from "react-router";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <main className="2xl:container w-11/12 mx-auto md:flex items-start justify-between gap-10 lg:gap-20">
       <section className="flex flex-col pt-8 lg:pt-12">
@@ -28,7 +31,10 @@ export const Hero = () => {
         </h3>
 
         <div className=" flex items-center gap-5 mt-10">
-          <Button className="bg-[#7F0DF2] cursor-pointer font-bold text-[10px] md:text-sm  h-12.5 w-38 md:w-57.5 rounded-4xl hover:bg-[#7F0DF2]/90">
+          <Button
+            className="bg-[#7F0DF2] cursor-pointer font-bold text-[10px] md:text-sm  h-12.5 w-38 md:w-57.5 rounded-4xl hover:bg-[#7F0DF2]/90"
+            onClick={() => navigate("/council-setup")}
+          >
             Create Your Council <MoveRight color="#fff" size={30} />
           </Button>
 
