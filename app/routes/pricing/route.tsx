@@ -4,7 +4,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { useNavigate } from "react-router";
 import { Bill } from "~/components/prices/Bill";
-import { FAQComponent } from "~/components/prices/FAQ";
+import { FAQComponent } from "~/components/prices/faq-component";
 
 export function meta({}: Route.MetaArgs) {
   return [

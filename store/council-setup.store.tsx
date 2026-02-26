@@ -65,7 +65,20 @@ export interface Agent {
   voice: string;
   accent: string;
   tone: string;
+  gender: "male" | "female";
+  avatarUrl: string;
 }
+
+const fetchRandomAvatar = async (gender: "male" | "female") => {
+  try {
+    const response = await fetch(`https://randomuser.me/api/?gender=${gender}`);
+    const data = await response.json();
+    return data.results[0].picture.large;
+  } catch (error) {
+    console.error("Error fetching random avatar:", error);
+    return "";
+  }
+};
 
 const createDefaultAgent = (index: number): Agent => ({
   id: crypto.randomUUID(),
@@ -77,6 +90,8 @@ const createDefaultAgent = (index: number): Agent => ({
   voice: "default",
   accent: "neutral",
   tone: "professional",
+  gender: index % 2 === 0 ? "male" : "female",
+  avatarUrl: "",
 });
 
 interface CouncilSetupState {
@@ -84,11 +99,16 @@ interface CouncilSetupState {
   agents: Agent[];
   setCouncilSize: (size: number) => void;
   updateAgent: (id: string, updates: Partial<Agent>) => void;
+  showCouncilOverview: boolean;
+  setShowCouncilOverview: (show: boolean) => void;
+  summonCouncil: () => void;
+  initializeAvatars: () => Promise<void>;
 }
 
-export const useCouncilSetupStore = create<CouncilSetupState>((set) => ({
+export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
   councilSize: 1,
   agents: [createDefaultAgent(0)],
+  // this is for the set council size
   setCouncilSize: (size) =>
     set((state) => {
       const newAgents = [...state.agents];
@@ -101,18 +121,57 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set) => ({
       }
       return { councilSize: size, agents: newAgents };
     }),
-  updateAgent: (id, updates) =>
+
+  // this is for the update agent
+  updateAgent: async (id, updates) => {
+    const agents = get().agents;
+    const targetAgent = agents.find((a) => a.id === id);
+
+    if (!targetAgent) return;
+
+    let finalUpdates = { ...updates };
+
+    // If gender changed, fetch a new avatar
+    if (updates.gender && updates.gender !== targetAgent.gender) {
+      const newAvatar = await fetchRandomAvatar(updates.gender);
+      finalUpdates.avatarUrl = newAvatar;
+    }
+
     set((state) => ({
       agents: state.agents.map((agent) => {
         if (agent.id === id) {
-          const newAgent = { ...agent, ...updates };
+          const newAgent = { ...agent, ...finalUpdates };
           // If preset changed, update personality values
-          if (updates.preset && PERSONALITY_PRESETS[updates.preset]) {
-            newAgent.personality = { ...PERSONALITY_PRESETS[updates.preset] };
+          if (finalUpdates.preset && PERSONALITY_PRESETS[finalUpdates.preset]) {
+            newAgent.personality = {
+              ...PERSONALITY_PRESETS[finalUpdates.preset],
+            };
           }
           return newAgent;
         }
         return agent;
       }),
-    })),
+    }));
+  },
+
+  // this is for the council overview modal
+  showCouncilOverview: false,
+  setShowCouncilOverview: (show) => set({ showCouncilOverview: show }),
+
+  // this is for the summon council button
+  summonCouncil: () => set({ showCouncilOverview: true }),
+
+  initializeAvatars: async () => {
+    const agents = get().agents;
+    const updatedAgents = await Promise.all(
+      agents.map(async (agent) => {
+        if (!agent.avatarUrl) {
+          const avatar = await fetchRandomAvatar(agent.gender);
+          return { ...agent, avatarUrl: avatar };
+        }
+        return agent;
+      }),
+    );
+    set({ agents: updatedAgents });
+  },
 }));

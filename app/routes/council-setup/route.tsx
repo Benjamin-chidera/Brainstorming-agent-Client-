@@ -2,6 +2,7 @@ import React from "react";
 import { AgentPods } from "~/components/council-setup/agent-pods";
 import { SetupSlider } from "~/components/council-setup/setup-slider";
 import type { Route } from "./+types/route";
+import { CouncilOverview } from "~/components/council-overview/Council-overview";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "About" }, { name: "description", content: "About page" }];
@@ -69,6 +70,10 @@ export default function CouncilSetup() {
       {/* this is the agent pods */}
       <section className="w-fit">
         <AgentPods />
+      </section>
+      {/* this is the council overview modal */}
+      <section>
+        <CouncilOverview />
       </section>
     </main>
   );
