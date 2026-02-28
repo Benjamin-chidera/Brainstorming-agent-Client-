@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Button } from "../ui/button";
 import { useCouncilSetupStore } from "store/council-setup.store";
-import { X } from "lucide-react";
+import { PowerIcon, X } from "lucide-react";
 
 export const CouncilOverview = () => {
   const { showCouncilOverview, setShowCouncilOverview, agents } =
@@ -37,7 +37,17 @@ export const CouncilOverview = () => {
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
               }}
-            ></div>
+            >
+              {/* add a power icon and a start button in the  */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="flex items-center gap-2 flex-col">
+                <PowerIcon size={20} className=" text-[#7F0DF2] mb-2" />
+                <Button className="bg-[#7F0DF2] text-white font-bold hover:bg-[#7a20d5] cursor-pointer w-50 h-10 rounded-full">
+                  Start
+                </Button>
+                </div>
+              </div>
+            </div>
 
             {/* Circular Agent Avatars */}
             {agents.map((agent, index) => {
