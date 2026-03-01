@@ -13,12 +13,15 @@ import {
 import { Button } from "../ui/button";
 import { useCouncilSetupStore } from "store/council-setup.store";
 import { PowerIcon, X } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export const CouncilOverview = () => {
   const { showCouncilOverview, setShowCouncilOverview, agents } =
     useCouncilSetupStore();
 
   const radius = 200; // Distance from center
+
+  const nativage = useNavigate()
 
   return (
     <main>
@@ -39,12 +42,12 @@ export const CouncilOverview = () => {
               }}
             >
               {/* add a power icon and a start button in the  */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="flex items-center gap-2 flex-col">
+             <div className=" border border-dashed border-white/10 rounded-full flex flex-col items-center justify-center h-[210px] w-[210px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+             <div className="shadow-[0_0_50px_rgba(127,13,242,0.3)] border border-white/10 rounded-full p-2 flex flex-col items-center justify-center h-[200px] w-[200px]">
                 <PowerIcon size={20} className=" text-[#7F0DF2] mb-2" />
-                <Button className="bg-[#7F0DF2] text-white font-bold hover:bg-[#7a20d5] cursor-pointer w-50 h-10 rounded-full">
-                  Start
-                </Button>
+                <Button className="bg-[#7F0DF2] text-white font-bold hover:bg-[#7a20d5] cursor-pointer  h-9 rounded-full w-full" onClick={() => {nativage("/live-meeting-room"); setShowCouncilOverview(false)}}>
+                    Start Meeting
+                  </Button>
                 </div>
               </div>
             </div>

@@ -9,11 +9,12 @@ import {
 } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Button } from "../ui/button";
-import { BillMobile } from "./Bill-mobile";
 import { useBillStore } from "store/bill.store";
 
 
-export const Bill = () => {
+export const BillMobile = () => {
+  const {switcher, setSwitcher} = useBillStore()
+
     const plans = [
 
       {
@@ -181,9 +182,17 @@ export const Bill = () => {
     </Tabs>
   </section>
 
-  {/* small screen */}
-  <section>
-    <BillMobile/>
+  {/* controllers */}
+  <section className=" flex justify-center items-center mt-10 gap-5">
+    <div>
+      <Button className=" bg-[#7F0DF2] text-white w-30 py-2 font-bold" onClick={() => setSwitcher("free")}>Free</Button>
+    </div>
+    <div>
+      <Button className=" bg-[#7F0DF2] text-white w-30 py-2 font-bold" onClick={() => setSwitcher("pro")}>Pro</Button>
+    </div>
+    <div>
+      <Button className=" bg-[#7F0DF2] text-white w-30 py-2 font-bold" onClick={() => setSwitcher("team")}>Team</Button>
+    </div>
   </section>
 </main>
 );
