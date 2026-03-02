@@ -68,7 +68,7 @@ export default function CouncilSetup() {
         </div>
       </section>
       {/* this is the agent pods */}
-      <section className="w-fit">
+      <section className="w-full">
         <AgentPods />
       </section>
       {/* this is the council overview modal */}

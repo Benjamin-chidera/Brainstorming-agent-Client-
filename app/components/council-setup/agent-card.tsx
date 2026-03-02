@@ -156,7 +156,7 @@ export const AgentCard = ({ agent }: AgentCardProps) => {
           <label className="text-[9px] font-bold text-gray-400 border-l-2 border-[#7F0DF2] pl-1.5 ml-0.5 uppercase tracking-tighter">
             Personality Archetype
           </label>
-          <div className="grid grid-cols-3 gap-1.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
             {presets.map((preset) => (
               <button
                 key={preset.id}
