@@ -8,6 +8,8 @@ export function meta({}: Route.MetaArgs) {
   return [{ title: "About" }, { name: "description", content: "About page" }];
 }
 
+import { TaskTracker } from "~/components/live-room-meeting/TaskTracker";
+
 export default function LiveMeetingRoom() {
   return (
     <main className="2xl:container w-full px-4 lg:w-11/12 mx-auto">
@@ -21,8 +23,7 @@ export default function LiveMeetingRoom() {
         </section>
 
         <section className="flex justify-center lg:justify-end">
-          {/* Third section will go here */}
-          <div className="bg-white/10 h-10 w-10 rounded-xl lg:block hidden"></div>
+          <TaskTracker />
         </section>
       </section>
 

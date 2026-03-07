@@ -7,7 +7,7 @@ export const MeetingController = () => {
     <main className="glass p-2 md:p-4 rounded-full w-[350px] h-[70px] mt-2 mx-auto flex justify-between items-center">
       <section className=" flex items-center justify-between gap-3">
         <div>
-          <Button className=" glass rounded-full h-9 w-9">
+          <Button className=" glass rounded-full h-9 w-9" disabled>
             <Video />
           </Button>
 
@@ -23,7 +23,7 @@ export const MeetingController = () => {
         </div>
 
         <div>
-          <Button className=" glass rounded-full h-9 w-9">
+          <Button className=" glass rounded-full h-9 w-9" disabled>
             <Share />
           </Button>
 

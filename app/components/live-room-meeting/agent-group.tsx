@@ -1,5 +1,33 @@
 import React from "react";
 import { useCouncilSetupStore } from "store/council-setup.store";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "~/components/ui/hover-card"
+import { Button } from "~/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
+import { 
+  FileText, 
+  Search, 
+  Pin, 
+  Lightbulb, 
+  MessageSquare, 
+  Mail, 
+  Scale, 
+  Brain, 
+  BarChart3, 
+  FileJson,
+  MoreHorizontal,
+  ChevronRight
+} from "lucide-react";
+
+
 
 export const AgentGroup = () => {
   const { agents } = useCouncilSetupStore();
@@ -43,42 +71,14 @@ export const AgentGroup = () => {
         const y = Math.sin(angle) * radius;
 
         return (
-          <div
-            key={agent.id}
-            className="absolute z-20 flex flex-col items-center gap-2 group pointer-events-none transition-all duration-700 ease-out"
-            style={{
-              transform: `translate(${x}px, ${y}px)`,
-            }}
-          >
-            <div className="relative pointer-events-auto cursor-pointer">
-              <div className="size-14 md:size-16 rounded-full border-2 border-[#7F0DF2]/60 p-0.5 bg-[#050505] backdrop-blur-xl shadow-2xl shadow-[#7F0DF2]/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:border-[#7F0DF2] animate-[float_6s_ease-in-out_infinite] overflow-hidden">
-                {agent.avatarUrl ? (
-                  <img
-                    src={agent.avatarUrl}
-                    alt={agent.name}
-                    className="w-full h-full object-cover rounded-full grayscale group-hover:grayscale-0 transition-all duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-xs md:text-sm">
-                    {agent.name.slice(0, 1).toUpperCase()}
-                  </div>
-                )}
-              </div>
-              {/* Role Badge */}
-              <div className="absolute -bottom-1 -right-1 bg-[#7F0DF2] text-white text-[8px] md:text-[9px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg capitalize">
-                {agent.role}
-              </div>
-            </div>
-            {/* Name Label */}
-            <div className="bg-black/90 backdrop-blur-xl border border-white/10 px-3 py-1 rounded-full shadow-2xl transform transition-all duration-300 opacity-40 group-hover:opacity-100 group-hover:scale-110 pointer-events-auto border-t-white/20">
-              <p className="text-[9px] md:text-[10px] font-black text-white tracking-widest whitespace-nowrap">
-                {agent.name}
-              </p>
-            </div>
-          </div>
+          <AgentItem 
+            key={agent.id} 
+            agent={agent} 
+            x={x} 
+            y={y} 
+          />
         );
       })}
-
       <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0) rotate(0); }
@@ -88,3 +88,126 @@ export const AgentGroup = () => {
     </div>
   );
 };
+
+const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+  return (
+    <div
+      className="absolute z-20 flex flex-col items-center gap-2 group pointer-events-none transition-all duration-700 ease-out"
+      style={{
+        transform: `translate(${x}px, ${y}px)`,
+      }}
+    >
+      <HoverCard 
+        open={isHovered || isDropdownOpen} 
+        onOpenChange={setIsHovered}
+        openDelay={0} 
+        closeDelay={200}
+      >
+        <HoverCardTrigger asChild>
+          <div className="relative pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95">
+            <div className="size-14 md:size-16 rounded-full border-2 border-[#7F0DF2]/60 p-0.5 bg-[#050505] backdrop-blur-xl shadow-2xl shadow-[#7F0DF2]/40 transition-all duration-500 group-hover:rotate-12 group-hover:border-[#7F0DF2] animate-[float_6s_ease-in-out_infinite] overflow-hidden">
+              {agent.avatarUrl ? (
+                <img
+                  src={agent.avatarUrl}
+                  alt={agent.name}
+                  className="w-full h-full object-cover rounded-full grayscale group-hover:grayscale-0 transition-all duration-500"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-xs md:text-sm">
+                  {agent.name.slice(0, 1).toUpperCase()}
+                </div>
+              )}
+            </div>
+            {/* Role Badge */}
+            <div className="absolute -bottom-1 -right-1 bg-[#7F0DF2] text-white text-[8px] md:text-[9px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg capitalize">
+              {agent.role}
+            </div>
+          </div>
+        </HoverCardTrigger>
+        <HoverCardContent 
+          side="top" 
+          align="center"
+          sideOffset={20}
+          className="w-64 p-3 bg-black/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(127,13,242,0.3)] animate-in fade-in zoom-in duration-300 pointer-events-auto"
+        >
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-white/5">
+              <div>
+                <h4 className="text-[11px] font-black text-white/90 uppercase tracking-tighter"> {agent.name}</h4>
+                <p className="text-[9px] text-[#7F0DF2] font-bold uppercase tracking-widest">{agent.role}</p>
+              </div>
+              <div className="size-2 bg-[#7F0DF2] rounded-full animate-pulse" />
+            </div>
+
+            <div className="grid grid-cols-1 gap-1.5">
+              {[
+                { icon: <FileText size={14} />, label: "Summarize Meeting" },
+                { icon: <Search size={14} />, label: "Research Topic" },
+                { icon: <Pin size={14} />, label: "Extract Action Items" },
+                { icon: <Lightbulb size={14} />, label: "Idea Generator" },
+                { icon: <MessageSquare size={14} />, label: "Ask the Meeting" },
+              ].map((btn, i) => (
+                <Button 
+                  key={i}
+                  variant="ghost" 
+                  className="h-9 justify-start gap-3 px-3 text-[10px] font-bold text-white/70 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5 rounded-xl transition-all duration-300 group/btn"
+                >
+                  <span className="text-[#7F0DF2] group-hover/btn:scale-110 transition-transform">
+                    {btn.icon}
+                  </span>
+                  {btn.label}
+                  <ChevronRight size={12} className="ml-auto opacity-0 group-hover/btn:opacity-40 -translate-x-2 group-hover/btn:translate-x-0 transition-all" />
+                </Button>
+              ))}
+
+              <DropdownMenu onOpenChange={setIsDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    className="h-9 justify-start gap-3 px-3 text-[10px] font-bold text-white/40 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5 rounded-xl transition-all duration-300"
+                  >
+                    <MoreHorizontal size={14} />
+                    Advanced Tasks
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  side="right"
+                  align="start"
+                  sideOffset={15}
+                  className="w-56 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-1 shadow-2xl"
+                >
+                  {[
+                    { icon: <Mail size={14} />, label: "Send Summary to email" },
+                    { icon: <Scale size={14} />, label: "Decision Tracker" },
+                    { icon: <Brain size={14} />, label: "Generate Ideas" },
+                    { icon: <BarChart3 size={14} />, label: "Analyze Sentiment" },
+                    { icon: <FileJson size={14} />, label: "Generate Report" },
+                  ].map((item, i) => (
+                    <DropdownMenuItem 
+                      key={i}
+                      className="flex items-center gap-3 px-3 py-2 text-[10px] font-bold text-white/70 focus:bg-[#7F0DF2]/10 focus:text-white rounded-lg cursor-pointer transition-colors"
+                    >
+                      <span className="text-[#7F0DF2]">{item.icon}</span>
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </HoverCardContent>
+      </HoverCard>
+
+      {/* Name Label */}
+      <div className="bg-black/90 backdrop-blur-xl border border-white/10 px-3 py-1 rounded-full shadow-2xl transform transition-all duration-300 opacity-40 group-hover:opacity-100 group-hover:scale-110 pointer-events-auto border-t-white/20">
+        <p className="text-[9px] md:text-[10px] font-black text-white tracking-widest whitespace-nowrap">
+          {agent.name}
+        </p>
+      </div>
+    </div>
+  );
+};
+
