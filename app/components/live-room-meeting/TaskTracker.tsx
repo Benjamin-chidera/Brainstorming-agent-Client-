@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FileText,
   Clipboard,
@@ -10,12 +10,21 @@ import {
   Loader2,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
 interface Task {
   id: string;
   title: string;
-  duration: string;
+  startedAt?: number;
+  completedAt?: number;
   progress: number;
   status: "pending" | "in-progress" | "completed";
 }
@@ -24,28 +33,50 @@ const TASKS: Task[] = [
   {
     id: "1",
     title: "Summarizing Key Points",
-    duration: "2:30",
+    startedAt: Date.now() - 600000, // 10 mins ago
+    completedAt: Date.now() - 450000, // 7.5 mins ago
     progress: 100,
-    // add the task result here cause that's what will be sent to the send or pdf or clipboard 
     status: "completed",
   },
   {
     id: "2",
     title: "Analyzing Market Trends",
-    duration: "5:45",
+    startedAt: Date.now() - 180000, // 3 mins ago
     progress: 65,
     status: "in-progress",
   },
   {
     id: "3",
     title: "Extracting Action Items",
-    duration: "0:00",
     progress: 0,
     status: "pending",
   },
 ];
 
+const formatDuration = (start?: number, end?: number) => {
+  if (!start) return "0:00";
+  const durationMs = (end || Date.now()) - start;
+  const totalSeconds = Math.max(0, Math.floor(durationMs / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+};
+
 export const TaskTracker = () => {
+  const [now, setNow] = useState(Date.now());
+  const [viewResultDialog, setViewResultDialog] = useState(false);
+
+  useEffect(() => {
+    const hasActiveTask = TASKS.some((t) => t.status === "in-progress");
+    if (!hasActiveTask) return;
+
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="w-full max-w-md space-y-4">
       <div className="flex items-center justify-between mb-2">
@@ -89,7 +120,8 @@ export const TaskTracker = () => {
                       {task.title}
                     </h4>
                     <p className="text-[10px] text-white/40 font-medium">
-                      Duration: {task.duration}
+                      Duration:{" "}
+                      {formatDuration(task.startedAt, task.completedAt)}
                     </p>
                   </div>
                 </div>
@@ -121,6 +153,71 @@ export const TaskTracker = () => {
                   )}
                 </div>
               </div>
+
+              {task.status === "completed" && (
+                <div className="mt-2">
+                  <Button
+                    className="bg-transparent hover:bg-transparent text-[10px]"
+                    onClick={() => {
+                      setViewResultDialog(true);
+                    }}
+                  >
+                    View Result
+                  </Button>
+
+                  <Dialog
+                    open={viewResultDialog}
+                    onOpenChange={setViewResultDialog}
+                  >
+                    {/* <DialogTrigger>Open</DialogTrigger> */}
+                    <DialogContent className="glass">
+                      <DialogHeader>
+                        <DialogTitle>Final Result</DialogTitle>
+                        <DialogDescription>
+                          Lorem ipsum dolor, sit amet consectetur adipisicing
+                          elit. Reprehenderit, perspiciatis. Voluptatum
+                          repellendus ab perferendis placeat minus laboriosam
+                          officia doloribus dolorem ullam, velit expedita
+                          deserunt nihil amet, voluptas consequatur blanditiis
+                          sunt maiores! Recusandae distinctio sed ducimus
+                          placeat, dolorem suscipit fugit magni quos corrupti a
+                          minima, consectetur deserunt commodi maiores non
+                          repellat!
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <DialogFooter>
+                        <div className="mt-4 flex items-center gap-2 pt-3 border-t border-white/5 animate-in fade-in slide-in-from-top-2 duration-700">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 text-[10px] font-black uppercase tracking-wider text-white/60 hover:text-white hover:bg-white/5 border border-white/5 rounded-lg flex-1"
+                          >
+                            <FileText size={12} className="mr-1.5" />
+                            PDF
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 text-[10px] font-black uppercase tracking-wider text-white/60 hover:text-white hover:bg-white/5 border border-white/5 rounded-lg flex-1"
+                          >
+                            <Clipboard size={12} className="mr-1.5" />
+                            Copy
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 text-[10px] font-black uppercase tracking-wider text-[#7F0DF2] hover:bg-[#7F0DF2]/5 border border-[#7F0DF2]/20 rounded-lg flex-1"
+                          >
+                            <Mail size={12} className="mr-1.5" />
+                            Email
+                          </Button>
+                        </div>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              )}
 
               {/* Actions for Completed Tasks */}
               {task.status === "completed" && (
@@ -154,7 +251,9 @@ export const TaskTracker = () => {
             </div>
           ))
         ) : (
-          <div className="text-center text-white/40 text-sm">No Assigned tasks yet</div>
+          <div className="text-center text-white/40 text-sm">
+            No Assigned tasks yet
+          </div>
         )}
       </div>
 
