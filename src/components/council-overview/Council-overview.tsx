@@ -1,0 +1,136 @@
+import React, { useState, useEffect } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "../ui/button";
+import { useCouncilSetupStore } from "@/store/council-setup.store";
+import { PowerIcon, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+export const CouncilOverview = () => {
+  const { showCouncilOverview, setShowCouncilOverview, agents } =
+    useCouncilSetupStore();
+
+  const [radius, setRadius] = useState(200);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const updateRadius = () => {
+      if (window.innerWidth < 640) {
+        setRadius(130);
+      } else if (window.innerWidth < 1024) {
+        setRadius(160);
+      } else {
+        setRadius(200);
+      }
+    };
+    updateRadius();
+    window.addEventListener("resize", updateRadius);
+    return () => window.removeEventListener("resize", updateRadius);
+  }, []);
+
+  return (
+    <main>
+      <AlertDialog
+        open={showCouncilOverview}
+        onOpenChange={setShowCouncilOverview}
+      >
+        <AlertDialogContent className="glass max-w-none w-75 md:w-screen h-[40vh] md:h-[70vh] p-0 overflow-hidden border-none shadow-2xl flex items-center justify-center">
+          <div className="relative flex items-center justify-center scale-90 sm:scale-100">
+            {/* Background Image Container */}
+            <div
+              className="h-[280px] w-[280px] sm:h-[350px] sm:w-[350px] lg:h-[400px] lg:w-[400px] bg-cover bg-center bg-no-repeat rounded-full relative z-10 shadow-[0_0_50px_rgba(127,13,242,0.3)] border-4 border-white/5"
+              style={{
+                backgroundImage: "url('/council-over-img.png')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+            >
+              {/* add a power icon and a start button in the  */}
+              <div className=" border border-dashed border-white/10 rounded-full flex flex-col items-center justify-center h-[160px] w-[160px] sm:h-[210px] sm:w-[210px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+                <div className="shadow-[0_0_50px_rgba(127,13,242,0.3)] border border-white/10 rounded-full p-2 flex flex-col items-center justify-center h-[150px] w-[150px] sm:h-[200px] sm:w-[200px]">
+                  <PowerIcon size={20} className=" text-[#7F0DF2] mb-2" />
+                  <Button
+                    className="bg-[#7F0DF2] text-white font-bold hover:bg-[#7a20d5] cursor-pointer h-9 rounded-full w-full text-xs sm:text-sm"
+                    onClick={() => {
+                      navigate("/live-meeting-room");
+                      setShowCouncilOverview(false);
+                    }}
+                  >
+                    Start Meeting
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Circular Agent Avatars */}
+            {agents.map((agent, index) => {
+              const angle = (index / agents.length) * 2 * Math.PI - Math.PI / 2;
+              const x = Math.cos(angle) * radius;
+              const y = Math.sin(angle) * radius;
+
+              return (
+                <div
+                  key={agent.id}
+                  className="absolute z-20 flex flex-col items-center gap-1 sm:gap-2 group pointer-events-none"
+                  style={{
+                    transform: `translate(${x}px, ${y}px)`,
+                  }}
+                >
+                  <div className="relative pointer-events-auto cursor-pointer">
+                    <div className="size-12 sm:size-16 rounded-full border-2 border-[#7F0DF2]/40 p-0.5 bg-[#121212]/80 backdrop-blur-sm shadow-xl shadow-[#7F0DF2]/20 transition-all duration-500 group-hover:scale-110 group-hover:border-[#7F0DF2] animate-[float_6s_ease-in-out_infinite] overflow-hidden">
+                      {agent.avatarUrl ? (
+                        <img
+                          src={agent.avatarUrl}
+                          alt={agent.name}
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-[10px] sm:text-xs">
+                          {agent.id.slice(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    {/* Role Badge */}
+                    <div className="absolute -bottom-1 -right-1 bg-[#7F0DF2] text-white text-[6px] sm:text-[8px] font-black px-1 sm:px-1.5 py-0.5 rounded-full border border-white/10 shadow-lg capitalize">
+                      {agent.role}
+                    </div>
+                  </div>
+                  {/* Name Label */}
+                  <div className="bg-[#121212]/90 backdrop-blur-md border border-white/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-2xl transform transition-all duration-300 opacity-80 group-hover:opacity-100 group-hover:scale-105 pointer-events-auto">
+                    <p className="text-[8px] sm:text-[10px] font-bold text-white tracking-wide whitespace-nowrap">
+                      {agent.name}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <AlertDialogFooter className=" absolute top-2 right-2">
+            <AlertDialogCancel className=" bg-transparent border-none">
+              <X />
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+      `}</style>
+    </main>
+  );
+};
