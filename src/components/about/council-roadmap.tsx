@@ -1,6 +1,4 @@
-import React from "react";
-
-export const CouncilRoadmap = () => {
+  export const CouncilRoadmap = () => {
   return (
     <main className=" mt-20 2xl:container w-11/12 mx-auto">
       <h1 className="lg:text-4xl text-2xl font-bold text-center">

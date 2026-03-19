@@ -1,16 +1,8 @@
 import { Ban, CheckCircle, Crown, Users, Zap } from "lucide-react";
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "../ui/button";
 import { BillMobile } from "./Bill-mobile";
-import { useBillStore } from "@/store/bill.store";
 
 export const Bill = () => {
   const plans = [

@@ -1,10 +1,11 @@
-import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useAuthStore } from "@/store/auth.store";
+import { LogOut } from "lucide-react";
 
 export const DesktopNavbar = () => {
-  const { isModalOpen, setIsModalOpen, setIsLogin, isLogin } = useAuthStore();
+  const { isModalOpen, setIsModalOpen, setIsLogin, isLogin, isAuth, logout } =
+    useAuthStore();
 
   const handleGetStarted = () => {
     setIsModalOpen(true);
@@ -20,7 +21,7 @@ export const DesktopNavbar = () => {
     <main>
       {" "}
       <section className="hidden lg:block">
-        <nav className="flex items-center justify-between h-12.5 w-11/12 2xl:container mx-auto rounded-full bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-100 text-white glass pr-2  fixed top-3 z-50  left-1/2 -translate-x-1/2">
+        <nav className="flex items-center justify-between h-12.5 w-11/12 2xl:container mx-auto rounded-full bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-100 text-white glass pr-2  fixed top-3 z-50  left-1/2 -translate-x-1/2 border border-white">
           <div>
             <Link to={"/"} className="flex items-center">
               <img
@@ -52,14 +53,16 @@ export const DesktopNavbar = () => {
               Pricing
             </NavLink>
 
-            <NavLink
-              to="/council-setup"
-              className={({ isActive }) =>
-                `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
-              }
-            >
-              Council Setup
-            </NavLink>
+            {isAuth && (
+              <NavLink
+                to="/council-setup"
+                className={({ isActive }) =>
+                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                }
+              >
+                Council Setup
+              </NavLink>
+            )}
 
             <NavLink
               to="/contact"
@@ -71,20 +74,31 @@ export const DesktopNavbar = () => {
             </NavLink>
           </div>
 
-          <div className="lg:flex items-center gap-4 hidden">
-            <Button
-              className={`font-medium px-4 py-2 rounded-full transition-colors text-sm ${isModalOpen && isLogin ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`}
-              onClick={handleLogin}
-            >
-              Login
-            </Button>
-            <Button
-              className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm"
-              onClick={handleGetStarted}
-            >
-              Get Started
-            </Button>
-          </div>
+          {!isAuth ? (
+            <div className="lg:flex items-center gap-4 hidden">
+              <Button
+                className={`font-medium px-4 py-2 rounded-full transition-colors text-sm ${isModalOpen && isLogin ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`}
+                onClick={handleLogin}
+              >
+                Login
+              </Button>
+              <Button
+                className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm"
+                onClick={handleGetStarted}
+              >
+                Get Started
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <Button
+                className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm cursor-pointer"
+                onClick={logout}
+              >
+                <LogOut />
+              </Button>
+            </div>
+          )}
         </nav>
       </section>
     </main>

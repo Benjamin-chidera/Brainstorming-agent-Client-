@@ -1,6 +1,5 @@
-import React from "react";
 import { Button } from "../ui/button";
-import { MicIcon, MicOff } from "lucide-react";
+import { MicOff } from "lucide-react";
 
 export const MuteBtn = () => {
   return (

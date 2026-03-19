@@ -1,9 +1,7 @@
 import { Ban, CheckCircle, Crown, Users, Zap } from "lucide-react";
-import React from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -13,6 +11,8 @@ import { useBillStore } from "@/store/bill.store";
 
 export const BillMobile = () => {
   const { switcher, setSwitcher } = useBillStore();
+
+  console.log(switcher);
 
   const plans = [
     {

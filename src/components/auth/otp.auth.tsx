@@ -10,11 +10,9 @@ import {
   AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogCancel,
-  AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { X, ArrowRight } from "lucide-react";
+import {  ArrowRight } from "lucide-react";
 
 export const InputOTPAuth = () => {
   const { isOtpModalOpen, setIsOtpModalOpen, verifyOtp, otp, setOtp } =

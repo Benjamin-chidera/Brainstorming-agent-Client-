@@ -1,11 +1,10 @@
-import React from "react";
 import { useCouncilSetupStore } from "@/store/council-setup.store";
 import { MuteBtn } from "./Mute-btn";
 import { Laptop, Plus } from "lucide-react";
 import { Button } from "../ui/button";
 
 export const InviteAgents = () => {
-  const { showCouncilOverview, setShowCouncilOverview, agents } =
+  const { agents } =
     useCouncilSetupStore();
 
   console.log(agents);

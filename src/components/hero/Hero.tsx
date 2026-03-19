@@ -1,4 +1,3 @@
-import React from "react";
 import "./hero.css";
 import { Dot, MoveRight } from "lucide-react";
 import { Button } from "../ui/button";

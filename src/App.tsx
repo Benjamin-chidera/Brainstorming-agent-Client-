@@ -9,10 +9,20 @@ import LiveMeetingRoom from "./pages/live-meeting-room/page";
 import { Auth } from "./components/auth/auth";
 import { InputOTPAuth } from "./components/auth/otp.auth";
 import { Toaster } from "./components/ui/sonner";
+import { useAuthStore } from "./store/auth.store";
+import { useEffect } from "react";
+import { Protect } from "./components/protected/protect";
 
 function App() {
+  const { getUser, isAuth } = useAuthStore();
+
+  
+  useEffect(() => {
+    getUser();
+  }, []);
+  
   return (
-    <main className="antialiased selection:bg-[#7f0df2] selection:text-white">
+    <main className=" pt-5">
       <div
         className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
         style={{
@@ -45,8 +55,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/council-setup" element={<CouncilSetup />} />
-          <Route path="/live-meeting-room" element={<LiveMeetingRoom />} />
+
+          <Route element={<Protect isAuth={isAuth} />}>
+            <Route path="/council-setup" element={<CouncilSetup />} />
+            <Route path="/live-meeting-room" element={<LiveMeetingRoom />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </main>

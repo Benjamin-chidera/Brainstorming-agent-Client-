@@ -1,6 +1,3 @@
-import { AudioLines } from "lucide-react";
-import React from "react";
-
 export const LiveTranscript = () => {
   return (
     <main className="glass p-5 rounded-3xl w-full max-w-[900px] h-[180px] mx-auto border border-white/5 shadow-2xl backdrop-blur-3xl group transition-all duration-500 overflow-hidden">

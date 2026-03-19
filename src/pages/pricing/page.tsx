@@ -1,9 +1,6 @@
-import { useState } from "react";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Sparkles } from "lucide-react";
 import { Bill } from "@/components/prices/Bill";
 import { FAQComponent } from "@/components/prices/faq-component";
-
 
 export default function PricingPage() {
   // const [isYearly, setIsYearly] = useState(false);

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FileText,
   Clipboard,
   Mail,
   CheckCircle2,
   Clock,
-  MoreHorizontal,
-  ChevronRight,
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +16,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 interface Task {
   id: string;
@@ -65,6 +62,8 @@ const formatDuration = (start?: number, end?: number) => {
 export const TaskTracker = () => {
   const [now, setNow] = useState(Date.now());
   const [viewResultDialog, setViewResultDialog] = useState(false);
+
+  console.log(now);
 
   useEffect(() => {
     const hasActiveTask = TASKS.some((t) => t.status === "in-progress");

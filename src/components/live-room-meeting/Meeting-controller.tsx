@@ -1,5 +1,4 @@
-import React from "react";
-import { Button } from "../ui/button";
+  import { Button } from "../ui/button";
 import { Mic, Phone, Share, Video } from "lucide-react";
 
 export const MeetingController = () => {

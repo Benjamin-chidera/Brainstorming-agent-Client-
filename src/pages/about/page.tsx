@@ -1,4 +1,3 @@
-import React from "react";
 import { MultiAgentSection } from "@/components/about/multi-agent-section";
 import { BottleNeckOfAI } from "@/components/about/bottle-neck-ai";
 import { CeoPic } from "@/components/about/team-pic";

@@ -1,4 +1,3 @@
-import React from "react";
 import type { Agent } from "@/store/council-setup.store";
 import { useCouncilSetupStore } from "@/store/council-setup.store";
 import {
@@ -50,17 +49,23 @@ export const VoiceSettingsModal = ({ agent }: VoiceSettingsModalProps) => {
               onChange={(e) => updateAgent(agent.id, { voice: e.target.value })}
               className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#7F0DF2]/50"
             >
-              <option value="male-1" className="bg-[#1a1a1a]">
-                Standard Male
+              <option value="alloy" className="bg-[#1a1a1a]">
+                Alloy (Neutral)
               </option>
-              <option value="male-2" className="bg-[#1a1a1a]">
-                Deep Male
+              <option value="echo" className="bg-[#1a1a1a]">
+                Echo (Male)
               </option>
-              <option value="female-1" className="bg-[#1a1a1a]">
-                Standard Female
+              <option value="fable" className="bg-[#1a1a1a]">
+                Fable (British/Neutral)
               </option>
-              <option value="female-2" className="bg-[#1a1a1a]">
-                Soft Female
+              <option value="onyx" className="bg-[#1a1a1a]">
+                Onyx (Deep Male)
+              </option>
+              <option value="nova" className="bg-[#1a1a1a]">
+                Nova (Energetic Female)
+              </option>
+              <option value="shimmer" className="bg-[#1a1a1a]">
+                Shimmer (Soft Female)
               </option>
             </select>
           </div>

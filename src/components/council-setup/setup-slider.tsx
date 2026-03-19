@@ -1,4 +1,3 @@
-import React from "react";
 import { useCouncilSetupStore } from "@/store/council-setup.store";
 import { Slider } from "@/components/ui/slider";
 

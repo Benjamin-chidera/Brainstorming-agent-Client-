@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import OpenAI from "openai";
 
 export type PersonalityPreset =
   | "analytical"
@@ -68,6 +69,7 @@ export interface Agent {
   gender: "male" | "female";
   avatarUrl: string;
   bio: string;
+  intro?: string | null;
 }
 
 const fetchRandomAvatar = async (gender: "male" | "female") => {
@@ -88,7 +90,7 @@ const createDefaultAgent = (index: number): Agent => ({
   expertise: [],
   personality: { ...PERSONALITY_PRESETS.balanced },
   preset: "balanced",
-  voice: "default",
+  voice: "alloy",
   accent: "neutral",
   tone: "professional",
   gender: index % 2 === 0 ? "male" : "female",
@@ -105,9 +107,19 @@ interface CouncilSetupState {
   setShowCouncilOverview: (show: boolean) => void;
   summonCouncil: () => void;
   initializeAvatars: () => Promise<void>;
+  // handleRefineBio: (agentId: string) => Promise<void>;
+  handleGenerateIntro: (agentId: string) => Promise<string | null>;
+  // refiningAgentIds: string[];
+  reviewAgentId: string | null;
+  setReviewAgentId: (id: string | null) => void;
+  playAgentIntroduction: (agent: Agent, text: string) => Promise<void>;
 }
 
 export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
+  // refiningAgentIds: [],
+  reviewAgentId: null,
+  setReviewAgentId: (id) => set({ reviewAgentId: id }),
+  isRefiningBio: false,
   councilSize: 1,
   agents: [createDefaultAgent(0)],
   // this is for the set council size
@@ -175,5 +187,71 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
       }),
     );
     set({ agents: updatedAgents });
+  },
+
+  handleGenerateIntro: async (agentId: string) => {
+    const { agents } = get();
+    const targetAgent = agents.find((a) => a.id === agentId);
+    if (!targetAgent || !targetAgent.bio) return null;
+
+    const client = new OpenAI({
+      apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+      baseURL: import.meta.env.VITE_OPENAI_API_URL,
+      dangerouslyAllowBrowser: true,
+    });
+
+    try {
+      const response = await client.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a helpful assistant. You have to generate a short introduction for the agent based on the bio provided. The introduction should be personalized and engaging. The introduction should be in first person.",
+          },
+          {
+            role: "user",
+            content: targetAgent.bio,
+          },
+        ],
+      });
+
+      const intro = response.choices[0].message.content;
+      console.log(intro);
+
+      set((state) => ({
+        agents: state.agents.map((agent) =>
+          agent.id === agentId ? { ...agent, intro } : agent,
+        ),
+      }));
+
+      return intro;
+    } catch (error) {
+      console.error("Failed to generate intro:", error);
+      return null;
+    }
+  },
+
+  playAgentIntroduction: async (agent: Agent, text: string) => {
+    try {
+      const client = new OpenAI({
+        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+        baseURL: import.meta.env.VITE_OPENAI_API_URL,
+        dangerouslyAllowBrowser: true,
+      });
+
+      const response = await client.audio.speech.create({
+        model: "tts-1",
+        voice: (agent.voice as any) || "alloy",
+        input: text,
+      });
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      await audio.play();
+    } catch (error) {
+      console.error("TTS failed:", error);
+    }
   },
 }));

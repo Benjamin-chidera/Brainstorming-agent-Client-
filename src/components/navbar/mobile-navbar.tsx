@@ -1,8 +1,8 @@
-import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Rotate as Hamburger } from "hamburger-react";
 import { useAuthStore } from "@/store/auth.store";
+import { LogOut } from "lucide-react";
 
 export const MobileNavbar = () => {
   const {
@@ -12,6 +12,8 @@ export const MobileNavbar = () => {
     isLogin,
     isMenuOpen,
     setIsMenuOpen,
+    isAuth,
+    logout,
   } = useAuthStore();
 
   const handleGetStarted = () => {
@@ -77,15 +79,17 @@ export const MobileNavbar = () => {
                 Pricing
               </NavLink>
 
-              <NavLink
-                to="/council-setup"
-                onClick={() => setIsMenuOpen(false)}
-                className={({ isActive }) =>
-                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
-                }
-              >
-                Council Setup
-              </NavLink>
+              {!isAuth && (
+                <NavLink
+                  to="/council-setup"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                  }
+                >
+                  Council Setup
+                </NavLink>
+              )}
 
               <NavLink
                 to="/contact"
@@ -96,18 +100,31 @@ export const MobileNavbar = () => {
                 Contact
               </NavLink>
 
-              <Button
-                className={`font-medium px-4 py-2 rounded-full transition-colors text-sm ${isModalOpen && isLogin ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`}
-                onClick={handleLogin}
-              >
-                Login
-              </Button>
-              <Button
-                className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm mt-2"
-                onClick={handleGetStarted}
-              >
-                Get Started
-              </Button>
+              {!isAuth ? (
+                <div className=" flex flex-col gap-3">
+                  <Button
+                    className={`font-medium px-4 py-2 rounded-full transition-colors text-sm ${isModalOpen && isLogin ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`}
+                    onClick={handleLogin}
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm mt-2"
+                    onClick={handleGetStarted}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button
+                    className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm cursor-pointer"
+                    onClick={logout}
+                  >
+                    <LogOut />
+                  </Button>
+                </div>
+              )}
             </div>
           </nav>
         )}

@@ -1,5 +1,3 @@
-import React from "react";
-
 export const FAQComponent = () => {
   const faqs = [
     {
@@ -19,6 +17,8 @@ export const FAQComponent = () => {
       a: "Yes — reach out to our team and we'll hook you up with a special rate.",
     },
   ];
+
+  console.log(faqs);
   return (
     <main>
       <div className="mt-24 px-4 max-w-2xl mx-auto">

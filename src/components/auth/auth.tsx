@@ -1,14 +1,11 @@
-import React from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth.store";
@@ -21,16 +18,12 @@ export const Auth = () => {
     setIsModalOpen,
     isLogin,
     setIsLogin,
-    setIsOtpModalOpen,
     email,
     setEmail,
     full_name,
     setFull_Name,
     register,
-    verifyOtp,
     login,
-    otp,
-    setOtp,
     handleGoogleLogin,
   } = useAuthStore();
 
