@@ -88,7 +88,7 @@ export const AgentCard = ({ agent }: AgentCardProps) => {
               <textarea
                 value={agent.bio}
                 onChange={(e) => updateAgent(agent.id, { bio: e.target.value })}
-                placeholder="Give this agent a personality, role, and skills..."
+                placeholder="Give this agent a personality and specific focus..."
                 className="flex-1 min-h-[140px] bg-white/3 border border-white/5 rounded-md p-3 text-xs text-white placeholder:text-gray-700 focus:outline-none focus:bg-white/5 focus:border-[#7F0DF2]/30 transition-all resize-none"
               />
             </div>
@@ -140,7 +140,7 @@ export const AgentCard = ({ agent }: AgentCardProps) => {
                 <img
                   src={agent.avatarUrl || "/default-avatar.png"}
                   className="w-full h-full rounded-full object-cover"
-                  alt={agent.name}
+                  alt="Agent"
                 />
               </div>
             </div>

@@ -35,7 +35,7 @@ export const VoiceSettingsModal = ({ agent }: VoiceSettingsModalProps) => {
         <DialogHeader>
           <DialogTitle>Voice Configuration</DialogTitle>
           <DialogDescription className="text-gray-400">
-            Customize how {agent.name} sounds and communicates.
+            Customize how the agent sounds and communicates.
           </DialogDescription>
         </DialogHeader>
 

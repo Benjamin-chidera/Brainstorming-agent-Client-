@@ -106,18 +106,14 @@ const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
               {agent.avatarUrl ? (
                 <img
                   src={agent.avatarUrl}
-                  alt={agent.name}
+                  alt="Agent"
                   className="w-full h-full object-cover rounded-full grayscale group-hover:grayscale-0 transition-all duration-500"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-xs md:text-sm">
-                  {agent.name.slice(0, 1).toUpperCase()}
+                  {agent.id.slice(0, 1).toUpperCase()}
                 </div>
               )}
-            </div>
-            {/* Role Badge */}
-            <div className="absolute -bottom-1 -right-1 bg-[#7F0DF2] text-white text-[8px] md:text-[9px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg capitalize">
-              {agent.role}
             </div>
           </div>
         </HoverCardTrigger>
@@ -132,11 +128,8 @@ const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
               <div>
                 <h4 className="text-[11px] font-black text-white/90 uppercase tracking-tighter">
                   {" "}
-                  {agent.name}
+                  Council Member
                 </h4>
-                <p className="text-[9px] text-[#7F0DF2] font-bold uppercase tracking-widest">
-                  {agent.role}
-                </p>
               </div>
               <div className="size-2 bg-[#7F0DF2] rounded-full animate-pulse" />
             </div>
@@ -209,12 +202,6 @@ const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
         </HoverCardContent>
       </HoverCard>
 
-      {/* Name Label */}
-      <div className="bg-black/90 backdrop-blur-xl border border-white/10 px-3 py-1 rounded-full shadow-2xl transform transition-all duration-300 opacity-40 group-hover:opacity-100 group-hover:scale-110 pointer-events-auto border-t-white/20">
-        <p className="text-[9px] md:text-[10px] font-black text-white tracking-widest whitespace-nowrap">
-          {agent.name}
-        </p>
-      </div>
     </div>
   );
 };

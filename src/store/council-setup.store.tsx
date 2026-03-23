@@ -1,68 +1,11 @@
 import { create } from "zustand";
 import OpenAI from "openai";
-
-export type PersonalityPreset =
-  | "analytical"
-  | "visionary"
-  | "risk-averse"
-  | "balanced"
-  | "aggressive"
-  | "experimental";
-
-export const PERSONALITY_PRESETS: Record<
-  PersonalityPreset,
-  Agent["personality"]
-> = {
-  analytical: {
-    creativity: 2,
-    riskTolerance: 3,
-    optimism: 5,
-    analyticalDepth: 9,
-  },
-  visionary: {
-    creativity: 9,
-    riskTolerance: 8,
-    optimism: 9,
-    analyticalDepth: 4,
-  },
-  "risk-averse": {
-    creativity: 4,
-    riskTolerance: 1,
-    optimism: 4,
-    analyticalDepth: 7,
-  },
-  balanced: {
-    creativity: 5,
-    riskTolerance: 5,
-    optimism: 5,
-    analyticalDepth: 5,
-  },
-  aggressive: {
-    creativity: 7,
-    riskTolerance: 9,
-    optimism: 8,
-    analyticalDepth: 6,
-  },
-  experimental: {
-    creativity: 9,
-    riskTolerance: 7,
-    optimism: 6,
-    analyticalDepth: 8,
-  },
-};
+import { Mistral } from "@mistralai/mistralai";
+import axios from "axios";
+import { toast } from "sonner";
 
 export interface Agent {
   id: string;
-  name: string;
-  role: string;
-  expertise: string[];
-  personality: {
-    creativity: number;
-    riskTolerance: number;
-    optimism: number;
-    analyticalDepth: number;
-  };
-  preset: PersonalityPreset;
   voice: string;
   accent: string;
   tone: string;
@@ -83,17 +26,21 @@ const fetchRandomAvatar = async (gender: "male" | "female") => {
   }
 };
 
-const createDefaultAgent = (index: number): Agent => ({
+const VOICE_GENDER_MAPPING: Record<string, "male" | "female"> = {
+  alloy: "female",
+  echo: "male",
+  fable: "female",
+  onyx: "male",
+  nova: "female",
+  shimmer: "female",
+};
+
+const createDefaultAgent = (): Agent => ({
   id: crypto.randomUUID(),
-  name: `Agent ${index + 1}`,
-  role: "strategist",
-  expertise: [],
-  personality: { ...PERSONALITY_PRESETS.balanced },
-  preset: "balanced",
   voice: "alloy",
   accent: "neutral",
   tone: "professional",
-  gender: index % 2 === 0 ? "male" : "female",
+  gender: "female",
   avatarUrl: "",
   bio: "",
 });
@@ -105,30 +52,25 @@ interface CouncilSetupState {
   updateAgent: (id: string, updates: Partial<Agent>) => void;
   showCouncilOverview: boolean;
   setShowCouncilOverview: (show: boolean) => void;
-  summonCouncil: () => void;
+  summonCouncil: () => Promise<void>;
   initializeAvatars: () => Promise<void>;
-  // handleRefineBio: (agentId: string) => Promise<void>;
   handleGenerateIntro: (agentId: string) => Promise<string | null>;
-  // refiningAgentIds: string[];
   reviewAgentId: string | null;
   setReviewAgentId: (id: string | null) => void;
   playAgentIntroduction: (agent: Agent, text: string) => Promise<void>;
 }
 
 export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
-  // refiningAgentIds: [],
   reviewAgentId: null,
   setReviewAgentId: (id) => set({ reviewAgentId: id }),
-  isRefiningBio: false,
   councilSize: 1,
-  agents: [createDefaultAgent(0)],
-  // this is for the set council size
+  agents: [createDefaultAgent()],
   setCouncilSize: (size) =>
     set((state) => {
       const newAgents = [...state.agents];
       if (size > state.agents.length) {
         for (let i = state.agents.length; i < size; i++) {
-          newAgents.push(createDefaultAgent(i));
+          newAgents.push(createDefaultAgent());
         }
       } else if (size < state.agents.length) {
         newAgents.splice(size);
@@ -136,7 +78,6 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
       return { councilSize: size, agents: newAgents };
     }),
 
-  // this is for the update agent
   updateAgent: async (id, updates) => {
     const agents = get().agents;
     const targetAgent = agents.find((a) => a.id === id);
@@ -145,8 +86,14 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
 
     let finalUpdates = { ...updates };
 
-    // If gender changed, fetch a new avatar
-    if (updates.gender && updates.gender !== targetAgent.gender) {
+    if (updates.voice && updates.voice !== targetAgent.voice) {
+      const newGender = VOICE_GENDER_MAPPING[updates.voice] || "female";
+      finalUpdates.gender = newGender;
+      if (newGender !== targetAgent.gender) {
+        const newAvatar = await fetchRandomAvatar(newGender);
+        finalUpdates.avatarUrl = newAvatar;
+      }
+    } else if (updates.gender && updates.gender !== targetAgent.gender) {
       const newAvatar = await fetchRandomAvatar(updates.gender);
       finalUpdates.avatarUrl = newAvatar;
     }
@@ -154,26 +101,45 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
     set((state) => ({
       agents: state.agents.map((agent) => {
         if (agent.id === id) {
-          const newAgent = { ...agent, ...finalUpdates };
-          // If preset changed, update personality values
-          if (finalUpdates.preset && PERSONALITY_PRESETS[finalUpdates.preset]) {
-            newAgent.personality = {
-              ...PERSONALITY_PRESETS[finalUpdates.preset],
-            };
-          }
-          return newAgent;
+          return { ...agent, ...finalUpdates };
         }
         return agent;
       }),
     }));
   },
 
-  // this is for the council overview modal
   showCouncilOverview: false,
   setShowCouncilOverview: (show) => set({ showCouncilOverview: show }),
 
-  // this is for the summon council button
-  summonCouncil: () => set({ showCouncilOverview: true }),
+  summonCouncil: async () => {
+    const { agents } = get();
+    // Filter agents to only include fields expected by the backend schema
+    const agentsPayload = agents.map(
+      ({ voice, accent, tone, gender, avatarUrl, bio }) => ({
+        voice,
+        accent,
+        tone,
+        gender,
+        avatarUrl,
+        bio,
+      }),
+    );
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/agents/create-council`,
+        agentsPayload,
+      );
+      if (response.status === 200 || response.status === 201) {
+        set({ showCouncilOverview: true });
+        toast.success("Council created successfully!");
+      }
+    } catch (error: any) {
+      console.error("Failed to create council:", error);
+      toast.error(error.response?.data?.detail || "Failed to create council");
+    }
+  },
+
 
   initializeAvatars: async () => {
     const agents = get().agents;
@@ -194,15 +160,13 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
     const targetAgent = agents.find((a) => a.id === agentId);
     if (!targetAgent || !targetAgent.bio) return null;
 
-    const client = new OpenAI({
-      apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-      baseURL: import.meta.env.VITE_OPENAI_API_URL,
-      dangerouslyAllowBrowser: true,
-    });
-
     try {
-      const response = await client.chat.completions.create({
-        model: "gpt-3.5-turbo",
+      const client = new Mistral({
+        apiKey: import.meta.env.VITE_MISTRAL_API_KEY,
+      });
+
+      const chatResponse = await client.chat.complete({
+        model: "mistral-medium-latest",
         messages: [
           {
             role: "system",
@@ -216,12 +180,18 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
         ],
       });
 
-      const intro = response.choices[0].message.content;
+      const content = chatResponse.choices?.[0]?.message?.content;
+      const intro = typeof content === "string" 
+        ? content 
+        : Array.isArray(content)
+          ? content.map(c => "text" in c ? (c as any).text : "").join("")
+          : null;
+
       console.log(intro);
 
       set((state) => ({
         agents: state.agents.map((agent) =>
-          agent.id === agentId ? { ...agent, intro } : agent,
+          agent.id === agentId ? { ...agent, bio: intro || agent.bio, intro } : agent,
         ),
       }));
 

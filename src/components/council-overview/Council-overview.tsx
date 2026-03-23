@@ -16,6 +16,8 @@ export const CouncilOverview = () => {
 
   const [radius, setRadius] = useState(200);
 
+  console.log(agents);  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,27 +87,17 @@ export const CouncilOverview = () => {
                   <div className="relative pointer-events-auto cursor-pointer">
                     <div className="size-12 sm:size-16 rounded-full border-2 border-[#7F0DF2]/40 p-0.5 bg-[#121212]/80 backdrop-blur-sm shadow-xl shadow-[#7F0DF2]/20 transition-all duration-500 group-hover:scale-110 group-hover:border-[#7F0DF2] animate-[float_6s_ease-in-out_infinite] overflow-hidden">
                       {agent.avatarUrl ? (
-                        <img
-                          src={agent.avatarUrl}
-                          alt={agent.name}
-                          className="w-full h-full object-cover rounded-full"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-[10px] sm:text-xs">
-                          {agent.id.slice(0, 2).toUpperCase()}
-                        </div>
-                      )}
+                         <img
+                           src={agent.avatarUrl}
+                           alt="Agent"
+                           className="w-full h-full object-cover rounded-full"
+                         />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-[10px] sm:text-xs">
+                           {agent.id.slice(0, 2).toUpperCase()}
+                         </div>
+                       )}
                     </div>
-                    {/* Role Badge */}
-                    <div className="absolute -bottom-1 -right-1 bg-[#7F0DF2] text-white text-[6px] sm:text-[8px] font-black px-1 sm:px-1.5 py-0.5 rounded-full border border-white/10 shadow-lg capitalize">
-                      {agent.role}
-                    </div>
-                  </div>
-                  {/* Name Label */}
-                  <div className="bg-[#121212]/90 backdrop-blur-md border border-white/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-2xl transform transition-all duration-300 opacity-80 group-hover:opacity-100 group-hover:scale-105 pointer-events-auto">
-                    <p className="text-[8px] sm:text-[10px] font-bold text-white tracking-wide whitespace-nowrap">
-                      {agent.name}
-                    </p>
                   </div>
                 </div>
               );
