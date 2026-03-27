@@ -33,12 +33,12 @@ function App() {
       ></div>
 
       {/* Gradient Overlays for depth */}
-      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-[#12081F] via-[#050505]/0 to-transparent"></div>
-      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_bottom_right,var(--tw-gradient-stops))] from-[#12081F] via-[#050505]/0 to-transparent"></div>
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-[#0D1117] via-[#0D1117]/0 to-transparent"></div>
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_bottom_right,var(--tw-gradient-stops))] from-[#0D1117] via-[#0D1117]/0 to-transparent"></div>
 
       {/* Neon Glows */}
-      <div className="fixed top-[10%] left-[10%] w-[500px] h-[500px] bg-[#7f0df2] rounded-full mix-blend-screen filter blur-[150px] opacity-20 pointer-events-none z-0"></div>
-      <div className="fixed bottom-[10%] right-[10%] w-[600px] h-[600px] bg-cyan-500 rounded-full mix-blend-screen filter blur-[150px] opacity-[0.15] pointer-events-none z-0"></div>
+      <div className="fixed top-[10%] left-[10%] w-[500px] h-[500px] bg-[#B6FF3B] rounded-full mix-blend-screen filter blur-[150px] opacity-[0.07] pointer-events-none z-0"></div>
+      <div className="fixed bottom-[10%] right-[10%] w-[600px] h-[600px] bg-[#B6FF3B] rounded-full mix-blend-screen filter blur-[150px] opacity-[0.04] pointer-events-none z-0"></div>
 
       {/*   pages */}
       <BrowserRouter>

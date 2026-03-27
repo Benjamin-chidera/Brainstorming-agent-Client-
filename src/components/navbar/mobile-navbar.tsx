@@ -63,7 +63,7 @@ export const MobileNavbar = () => {
                 to="/about"
                 onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
-                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`
                 }
               >
                 About
@@ -73,7 +73,7 @@ export const MobileNavbar = () => {
                 to="/pricing"
                 onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
-                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`
                 }
               >
                 Pricing
@@ -84,7 +84,7 @@ export const MobileNavbar = () => {
                   to="/council-setup"
                   onClick={() => setIsMenuOpen(false)}
                   className={({ isActive }) =>
-                    `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                    `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`
                   }
                 >
                   Council Setup
@@ -94,7 +94,7 @@ export const MobileNavbar = () => {
               <NavLink
                 to="/contact"
                 className={({ isActive }) =>
-                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`
                 }
               >
                 Contact
@@ -103,13 +103,13 @@ export const MobileNavbar = () => {
               {!isAuth ? (
                 <div className=" flex flex-col gap-3">
                   <Button
-                    className={`font-medium px-4 py-2 rounded-full transition-colors text-sm ${isModalOpen && isLogin ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`}
+                    className={`font-medium px-4 py-2 rounded-full transition-colors text-sm ${isModalOpen && isLogin ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`}
                     onClick={handleLogin}
                   >
                     Login
                   </Button>
                   <Button
-                    className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm mt-2"
+                    className="bg-[#B6FF3B] text-[#0D1117] px-5 py-2 rounded-full font-semibold hover:bg-[#B6FF3B]/90 transition-colors text-sm mt-2"
                     onClick={handleGetStarted}
                   >
                     Get Started
@@ -118,7 +118,7 @@ export const MobileNavbar = () => {
               ) : (
                 <div>
                   <Button
-                    className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm cursor-pointer"
+                    className="bg-[#B6FF3B] text-[#0D1117] px-5 py-2 rounded-full font-semibold hover:bg-[#B6FF3B]/90 transition-colors text-sm cursor-pointer"
                     onClick={logout}
                   >
                     <LogOut />

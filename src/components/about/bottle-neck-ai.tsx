@@ -5,7 +5,7 @@ export const BottleNeckOfAI = () => {
       {" "}
       <section className="glass w-full h-full mt-10 py-10 lg:py-24">
         <section className="2xl:container w-11/12 mx-auto">
-          <h2 className=" text-center font-bold text-4xl">
+          <h2 className=" text-center font-bold text-4xl text-gray-200">
             The <span className="text-[#F87171]">Bottleneck</span> of Single AI
           </h2>
 
@@ -32,7 +32,7 @@ export const BottleNeckOfAI = () => {
                 </svg>
               </div>
 
-              <h3 className="text-xl font-bold mt-3">Echo Chambers</h3>
+              <h3 className="text-xl font-bold mt-3 text-gray-200">Echo Chambers</h3>
               <p className="text-xs text-[#94A3B8] mt-3">
                 Single models often double down on their own biases without a
                 secondary 'voice' to provide correction or nuance.
@@ -56,7 +56,7 @@ export const BottleNeckOfAI = () => {
                 </svg>
               </div>
 
-              <h3 className="text-xl font-bold mt-3">
+              <h3 className="text-xl font-bold mt-3 text-gray-200">
                 Unchecked Hallucinations
               </h3>
               <p className="text-xs text-[#94A3B8] mt-3">
@@ -82,7 +82,7 @@ export const BottleNeckOfAI = () => {
                 </svg>
               </div>
 
-              <h3 className="text-xl font-bold mt-3">Narrow Perspective</h3>
+              <h3 className="text-xl font-bold mt-3 text-gray-200">Narrow Perspective</h3>
               <p className="text-xs text-[#94A3B8] mt-3">
                 Broad models lack the deep domain mastery required for complex
                 regulatory or financial strategic planning.

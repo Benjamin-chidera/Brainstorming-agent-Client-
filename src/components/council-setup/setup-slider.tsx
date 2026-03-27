@@ -7,7 +7,7 @@ export const SetupSlider = () => {
   return (
     <div className="flex items-center gap-5 w-full justify-end">
       <div>
-        <p className=" font-bold text-2xl text-[#7F0DF2]">{councilSize}</p>
+        <p className=" font-bold text-2xl text-[#B6FF3B]">{councilSize}</p>
       </div>
       <div className="flex-1">
         <div>

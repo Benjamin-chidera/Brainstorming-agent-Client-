@@ -26,7 +26,7 @@ export const InputOTPAuth = () => {
             Verify Your Identity
           </AlertDialogTitle>
           <AlertDialogDescription className="text-center">
-            <p className="text-sm text-[#94A3B8] mb-8">
+            <p className="text-sm text-[#8B949E] mb-8">
               We've sent a 6-digit code to your email. <br />
               Enter it below to continue.
             </p>
@@ -69,15 +69,15 @@ export const InputOTPAuth = () => {
 
             <div className="space-y-4">
               <Button
-                className="w-full bg-[#7F0DF2] text-white hover:bg-[#7427c1] transition-all cursor-pointer h-12 text-base font-medium"
+                className="w-full bg-[#B6FF3B] text-[#0D1117] hover:bg-[#B6FF3B]/90 transition-all cursor-pointer h-12 text-base font-bold"
                 onClick={verifyOtp}
               >
                 Verify Code <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
 
-              <p className="text-xs text-[#94A3B8]">
+              <p className="text-xs text-[#8B949E]">
                 Didn't receive the code?{" "}
-                <span className="text-[#7F0DF2] cursor-pointer hover:underline font-medium">
+                <span className="text-[#B6FF3B] cursor-pointer hover:underline font-medium">
                   Resend OTP
                 </span>
               </p>

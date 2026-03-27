@@ -13,6 +13,7 @@ export interface Agent {
   avatarUrl: string;
   bio: string;
   intro?: string | null;
+  isNew?: boolean;
 }
 
 const fetchRandomAvatar = async (gender: "male" | "female") => {
@@ -43,6 +44,7 @@ const createDefaultAgent = (): Agent => ({
   gender: "female",
   avatarUrl: "",
   bio: "",
+  isNew: true,
 });
 
 interface CouncilSetupState {
@@ -58,6 +60,15 @@ interface CouncilSetupState {
   reviewAgentId: string | null;
   setReviewAgentId: (id: string | null) => void;
   playAgentIntroduction: (agent: Agent, text: string) => Promise<void>;
+
+  // New: CRUD & persistence
+  isCouncilCreated: boolean;
+  isMeetingStarted: boolean;
+  setIsMeetingStarted: (status: boolean) => void;
+  isFetchingCouncil: boolean;
+  fetchCouncil: () => Promise<void>;
+  updateAgentOnServer: (id: string) => Promise<void>;
+  deleteAgent: (id: string) => Promise<void>;
 }
 
 export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
@@ -65,6 +76,13 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
   setReviewAgentId: (id) => set({ reviewAgentId: id }),
   councilSize: 1,
   agents: [createDefaultAgent()],
+
+  // New state defaults
+  isCouncilCreated: false,
+  isMeetingStarted: false,
+  setIsMeetingStarted: (status) => set({ isMeetingStarted: status }),
+  isFetchingCouncil: false,
+
   setCouncilSize: (size) =>
     set((state) => {
       const newAgents = [...state.agents];
@@ -111,10 +129,43 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
   showCouncilOverview: false,
   setShowCouncilOverview: (show) => set({ showCouncilOverview: show }),
 
+  // ── Fetch existing council from backend ──────────────────────────
+  fetchCouncil: async () => {
+    set({ isFetchingCouncil: true });
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/agents/get-council`,
+      );
+
+      const serverAgents: Agent[] = response.data;
+
+      if (serverAgents && serverAgents.length > 0) {
+        set({
+          agents: serverAgents.map((a) => ({ ...a, isNew: false })),
+          councilSize: serverAgents.length,
+          isCouncilCreated: true,
+        });
+      }
+    } catch (error: any) {
+      // 404 or empty means no council yet — that's fine, keep defaults
+      console.log("No existing council found, starting fresh.");
+    } finally {
+      set({ isFetchingCouncil: false });
+    }
+  },
+
+  // ── Create council (POST) ────────────────────────────────────────
   summonCouncil: async () => {
-    const { agents } = get();
-    // Filter agents to only include fields expected by the backend schema
-    const agentsPayload = agents.map(
+    const { agents, isCouncilCreated } = get();
+
+    // If council exists, only POST the locally new agents to join the existing ones
+    const agentsToCreate = isCouncilCreated
+      ? agents.filter((a) => a.isNew)
+      : agents;
+
+    if (agentsToCreate.length === 0) return;
+
+    const agentsPayload = agentsToCreate.map(
       ({ voice, accent, tone, gender, avatarUrl, bio }) => ({
         voice,
         accent,
@@ -131,8 +182,10 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
         agentsPayload,
       );
       if (response.status === 200 || response.status === 201) {
-        set({ showCouncilOverview: true });
-        toast.success("Council created successfully!");
+        // Fetch freshly from server to ensure we have the correct server-generated IDs for edits/deletes
+        await get().fetchCouncil();
+        set({ showCouncilOverview: true, isCouncilCreated: true });
+        toast.success("Council updated successfully!");
       }
     } catch (error: any) {
       console.error("Failed to create council:", error);
@@ -140,19 +193,88 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
     }
   },
 
+  // ── Update a single agent (PUT) ─────────────────────────────────
+  updateAgentOnServer: async (id: string) => {
+    const { agents } = get();
+    const agent = agents.find((a) => a.id === id);
+    if (!agent) return;
+
+    try {
+      const { voice, accent, tone, gender, avatarUrl, bio } = agent;
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/agents/update-a-council/${id}`,
+        { voice, accent, tone, gender, avatarUrl, bio },
+      );
+      toast.success("Agent updated!");
+    } catch (error: any) {
+      console.error("Failed to update agent:", error);
+      toast.error(error.response?.data?.detail || "Failed to update agent");
+    }
+  },
+
+  // ── Delete an agent (DELETE) ─────────────────────────────────────
+  deleteAgent: async (id: string) => {
+    const { isCouncilCreated } = get();
+
+    console.log(id);
+    
+
+    // If the council exists on the server, delete remotely too
+    if (isCouncilCreated) {
+      try {
+        await axios.delete(
+          `${import.meta.env.VITE_API_URL}/agents/delete-council/${id}`,
+        );
+        toast.success("Agent removed!");
+      } catch (error: any) {
+        console.error("Failed to delete agent:", error);
+        toast.error(error.response?.data?.detail || "Failed to delete agent");
+        return; // Don't remove locally if server delete failed
+      }
+    }
+
+    set((state) => {
+      const remaining = state.agents.filter((a) => a.id !== id);
+      // If all agents deleted, reset council state
+      if (remaining.length === 0) {
+        return {
+          agents: [createDefaultAgent()],
+          councilSize: 1,
+          isCouncilCreated: false,
+        };
+      }
+      return {
+        agents: remaining,
+        councilSize: remaining.length,
+      };
+    });
+  },
 
   initializeAvatars: async () => {
     const agents = get().agents;
-    const updatedAgents = await Promise.all(
-      agents.map(async (agent) => {
-        if (!agent.avatarUrl) {
-          const avatar = await fetchRandomAvatar(agent.gender);
-          return { ...agent, avatarUrl: avatar };
-        }
-        return agent;
-      }),
+
+    // We only want to fetch avatars for agents that lack them
+    const agentsNeedAvatar = agents.filter(a => !a.avatarUrl);
+    if (agentsNeedAvatar.length === 0) return;
+
+    // Fetch avatars
+    const newAvatars = await Promise.all(
+       agentsNeedAvatar.map(async (agent) => {
+          return { id: agent.id, avatarUrl: await fetchRandomAvatar(agent.gender) };
+       })
     );
-    set({ agents: updatedAgents });
+
+    // Apply functionally so we don't overwrite other agent changes (like fetching council)
+    set((state) => {
+       const newAgents = state.agents.map(agent => {
+          const update = newAvatars.find(a => a.id === agent.id);
+          if (update) {
+             return { ...agent, avatarUrl: update.avatarUrl };
+          }
+          return agent;
+       });
+       return { agents: newAgents };
+    });
   },
 
   handleGenerateIntro: async (agentId: string) => {
@@ -181,17 +303,20 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
       });
 
       const content = chatResponse.choices?.[0]?.message?.content;
-      const intro = typeof content === "string" 
-        ? content 
-        : Array.isArray(content)
-          ? content.map(c => "text" in c ? (c as any).text : "").join("")
-          : null;
+      const intro =
+        typeof content === "string"
+          ? content
+          : Array.isArray(content)
+            ? content.map((c) => ("text" in c ? (c as any).text : "")).join("")
+            : null;
 
       console.log(intro);
 
       set((state) => ({
         agents: state.agents.map((agent) =>
-          agent.id === agentId ? { ...agent, bio: intro || agent.bio, intro } : agent,
+          agent.id === agentId
+            ? { ...agent, bio: intro || agent.bio, intro }
+            : agent,
         ),
       }));
 

@@ -25,53 +25,53 @@ export const VoiceSettingsModal = ({ agent }: VoiceSettingsModalProps) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="w-full bg-white/5 border-white/10 hover:bg-white/10 text-xs gap-2 py-5 rounded-xl text-gray-300"
+          className="w-full bg-white/5 border-white/10 hover:bg-white/10 text-xs gap-2 py-5 rounded-xl text-[#8B949E]"
         >
-          <Mic2Icon className="size-3 text-[#7F0DF2]" />
+          <Mic2Icon className="size-3 text-[#B6FF3B]" />
           Configure Voice
         </Button>
       </DialogTrigger>
       <DialogContent className="glass border-white/10 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Voice Configuration</DialogTitle>
-          <DialogDescription className="text-gray-400">
+          <DialogDescription className="text-[#8B949E]">
             Customize how the agent sounds and communicates.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-6 py-4">
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
+            <label className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">
               Voice Selector
             </label>
             <select
               value={agent.voice}
               onChange={(e) => updateAgent(agent.id, { voice: e.target.value })}
-              className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#7F0DF2]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#B6FF3B]/50"
             >
-              <option value="alloy" className="bg-[#1a1a1a]">
+              <option value="alloy" className="bg-[#161B22]">
                 Alloy (Neutral)
               </option>
-              <option value="echo" className="bg-[#1a1a1a]">
+              <option value="echo" className="bg-[#161B22]">
                 Echo (Male)
               </option>
-              <option value="fable" className="bg-[#1a1a1a]">
+              <option value="fable" className="bg-[#161B22]">
                 Fable (British/Neutral)
               </option>
-              <option value="onyx" className="bg-[#1a1a1a]">
+              <option value="onyx" className="bg-[#161B22]">
                 Onyx (Deep Male)
               </option>
-              <option value="nova" className="bg-[#1a1a1a]">
+              <option value="nova" className="bg-[#161B22]">
                 Nova (Energetic Female)
               </option>
-              <option value="shimmer" className="bg-[#1a1a1a]">
+              <option value="shimmer" className="bg-[#161B22]">
                 Shimmer (Soft Female)
               </option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
+            <label className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">
               Accent
             </label>
             <select
@@ -79,42 +79,42 @@ export const VoiceSettingsModal = ({ agent }: VoiceSettingsModalProps) => {
               onChange={(e) =>
                 updateAgent(agent.id, { accent: e.target.value })
               }
-              className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#7F0DF2]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#B6FF3B]/50"
             >
-              <option value="us" className="bg-[#1a1a1a]">
+              <option value="us" className="bg-[#161B22]">
                 American (US)
               </option>
-              <option value="uk" className="bg-[#1a1a1a]">
+              <option value="uk" className="bg-[#161B22]">
                 British (UK)
               </option>
-              <option value="au" className="bg-[#1a1a1a]">
+              <option value="au" className="bg-[#161B22]">
                 Australian (AU)
               </option>
-              <option value="in" className="bg-[#1a1a1a]">
+              <option value="in" className="bg-[#161B22]">
                 Indian (IN)
               </option>
             </select>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
+            <label className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">
               Tone
             </label>
             <select
               value={agent.tone}
               onChange={(e) => updateAgent(agent.id, { tone: e.target.value })}
-              className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#7F0DF2]/50"
+              className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#B6FF3B]/50"
             >
-              <option value="professional" className="bg-[#1a1a1a]">
+              <option value="professional" className="bg-[#161B22]">
                 Professional
               </option>
-              <option value="friendly" className="bg-[#1a1a1a]">
+              <option value="friendly" className="bg-[#161B22]">
                 Friendly
               </option>
-              <option value="authoritative" className="bg-[#1a1a1a]">
+              <option value="authoritative" className="bg-[#161B22]">
                 Authoritative
               </option>
-              <option value="empathetic" className="bg-[#1a1a1a]">
+              <option value="empathetic" className="bg-[#161B22]">
                 Empathetic
               </option>
             </select>
@@ -123,7 +123,7 @@ export const VoiceSettingsModal = ({ agent }: VoiceSettingsModalProps) => {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button className="w-full bg-[#7F0DF2] hover:bg-[#6a0cc9] text-white font-bold uppercase text-xs tracking-widest py-6 rounded-xl">
+            <Button className="w-full bg-[#B6FF3B] hover:bg-[#B6FF3B]/90 text-[#0D1117] font-bold uppercase text-xs tracking-widest py-6 rounded-xl">
               Save Settings
             </Button>
           </DialogClose>

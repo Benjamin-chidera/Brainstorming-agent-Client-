@@ -21,7 +21,7 @@ export const DesktopNavbar = () => {
     <main>
       {" "}
       <section className="hidden lg:block">
-        <nav className="flex items-center justify-between h-12.5 w-11/12 2xl:container mx-auto rounded-full bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-100 text-white glass pr-2  fixed top-3 z-50  left-1/2 -translate-x-1/2 border border-white">
+        <nav className="flex items-center justify-between h-12.5 w-11/12 2xl:container mx-auto rounded-full bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-100 text-white glass pr-2  fixed top-3 z-50  left-1/2 -translate-x-1/2 border border-[#8B949E]/20">
           <div>
             <Link to={"/"} className="flex items-center">
               <img
@@ -38,7 +38,7 @@ export const DesktopNavbar = () => {
             <NavLink
               to="/about"
               className={({ isActive }) =>
-                `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`
               }
             >
               About
@@ -47,7 +47,7 @@ export const DesktopNavbar = () => {
             <NavLink
               to="/pricing"
               className={({ isActive }) =>
-                `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`
               }
             >
               Pricing
@@ -57,7 +57,7 @@ export const DesktopNavbar = () => {
               <NavLink
                 to="/council-setup"
                 className={({ isActive }) =>
-                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                  `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`
                 }
               >
                 Council Setup
@@ -67,7 +67,7 @@ export const DesktopNavbar = () => {
             <NavLink
               to="/contact"
               className={({ isActive }) =>
-                `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`
+                `font-medium px-4 py-2 rounded-full transition-colors text-sm ${isActive ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`
               }
             >
               Contact
@@ -77,13 +77,13 @@ export const DesktopNavbar = () => {
           {!isAuth ? (
             <div className="lg:flex items-center gap-4 hidden">
               <Button
-                className={`font-medium px-4 py-2 rounded-full transition-colors text-sm ${isModalOpen && isLogin ? "bg-[#7F0DF2] text-white" : "hover:bg-[#7F0DF2] hover:text-white"}`}
+                className={`font-medium px-4 py-2 rounded-full transition-colors text-sm ${isModalOpen && isLogin ? "bg-[#B6FF3B] text-[#0D1117]" : "text-[#8B949E] hover:bg-[#B6FF3B]/10 hover:text-[#B6FF3B]"}`}
                 onClick={handleLogin}
               >
                 Login
               </Button>
               <Button
-                className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm"
+                className="bg-[#B6FF3B] text-[#0D1117] px-5 py-2 rounded-full font-semibold hover:bg-[#B6FF3B]/90 transition-colors text-sm"
                 onClick={handleGetStarted}
               >
                 Get Started
@@ -92,7 +92,7 @@ export const DesktopNavbar = () => {
           ) : (
             <div>
               <Button
-                className="bg-[#7F0DF2] text-white px-5 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-colors text-sm cursor-pointer"
+                className="bg-[#B6FF3B] text-[#0D1117] px-5 py-2 rounded-full font-semibold hover:bg-[#B6FF3B]/90 transition-colors text-sm cursor-pointer"
                 onClick={logout}
               >
                 <LogOut />

@@ -29,12 +29,12 @@ export default function Home() {
                   width="48"
                   height="48"
                   rx="24"
-                  fill="#7F0DF2"
+                  fill="#B6FF3B"
                   fillOpacity="0.2"
                 />
                 <path
                   d="M19 30V18H21V30H19ZM23 34V14H25V34H23ZM15 26V22H17V26H15ZM27 30V18H29V30H27ZM31 26V22H33V26H31Z"
-                  fill="#7F0DF2"
+                  fill="#B6FF3B"
                 />
               </svg>
             </div>
@@ -42,15 +42,15 @@ export default function Home() {
               <p className="md:text-sm text-xs font-semibold whitespace-nowrap">
                 Council Feedback Loop{" "}
               </p>
-              <p className="md:text-sm text-[10px]  text-[#94A3B8] whitespace-nowrap">
+              <p className="md:text-sm text-[10px]  text-[#8B949E] whitespace-nowrap">
                 Processing active strategy session...{" "}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-0">
-            <Dot size={40} color="#10B981" />
-            <p className="md:text-xs hidden md:block whitespace-nowrap text-[#10B981]">
+            <Dot size={40} color="#B6FF3B" />
+            <p className="md:text-xs hidden md:block whitespace-nowrap text-[#B6FF3B]">
               Live Analysis
             </p>
           </div>
@@ -62,8 +62,8 @@ export default function Home() {
           <div className="flex flex-wrap gap-3 items-center justify-between pt-6">
             {macrketText.map((text, index) => (
               <div key={index} className="flex items-center gap-4">
-                <CheckCircle size={20} color="#10B981" />
-                <p className="md:text-xs text-[8px] whitespace-nowrap text-[#10B981]">
+                <CheckCircle size={20} color="#B6FF3B" />
+                <p className="md:text-xs text-[8px] whitespace-nowrap text-[#B6FF3B]">
                   {text}
                 </p>
               </div>

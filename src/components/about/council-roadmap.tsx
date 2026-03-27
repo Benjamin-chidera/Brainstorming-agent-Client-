@@ -1,11 +1,11 @@
   export const CouncilRoadmap = () => {
   return (
     <main className=" mt-20 2xl:container w-11/12 mx-auto">
-      <h1 className="lg:text-4xl text-2xl font-bold text-center">
-        The <span className="text-[#7F0DF2]">Council</span> Roadmap
+      <h1 className="lg:text-4xl text-2xl font-bold text-center text-gray-200">
+        The <span className="text-[#B6FF3B]">Council</span> Roadmap
       </h1>
 
-      <p className="md:text-sm text-xs text-center text-[#94A3B8] mt-3">
+      <p className="md:text-sm text-xs text-center text-[#8B949E] mt-3">
         Building the future of orchestrated intelligence, step by step.
       </p>
 
@@ -20,18 +20,18 @@
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <rect width="48" height="48" rx="24" fill="#7F0DF2" />
+              <rect width="48" height="48" rx="24" fill="#B6FF3B" />
               <path
                 d="M20.384 29.724C18.976 29.724 17.856 29.3373 17.024 28.564C16.192 27.7907 15.776 26.684 15.776 25.244V22.556C15.776 21.116 16.192 20.0093 17.024 19.236C17.856 18.4627 18.976 18.076 20.384 18.076C21.792 18.076 22.912 18.4627 23.744 19.236C24.576 20.0093 24.992 21.116 24.992 22.556V25.244C24.992 26.684 24.576 27.7907 23.744 28.564C22.912 29.3373 21.792 29.724 20.384 29.724ZM20.384 27.836C21.1733 27.836 21.7866 27.6067 22.224 27.148C22.6613 26.6893 22.88 26.076 22.88 25.308V22.492C22.88 21.724 22.6613 21.1107 22.224 20.652C21.7866 20.1933 21.1733 19.964 20.384 19.964C19.6053 19.964 18.9946 20.1933 18.552 20.652C18.1093 21.1107 17.888 21.724 17.888 22.492V25.308C17.888 26.076 18.1093 26.6893 18.552 27.148C18.9946 27.6067 19.6053 27.836 20.384 27.836ZM21.12 32.38C20.5973 32.38 20.1733 32.2173 19.848 31.892C19.5226 31.5667 19.36 31.132 19.36 30.588V29.5H21.408V30.268C21.408 30.588 21.5573 30.748 21.856 30.748H22.8V32.38H21.12ZM29.92 29.5V19.804H29.632L28.128 23.356H25.984L28.272 18.3H31.968V29.5H29.92Z"
-                fill="white"
+                fill="#0D1117"
               />
             </svg>
           </div>
 
           <div className="glass h-[130px] w-[284px] p-5 lg:mt-10 mt-5 rounded-4xl">
-            <h1 className="text-lg font-bold">Agent Synthesis Engine</h1>
+            <h1 className="text-lg font-bold text-gray-200">Agent Synthesis Engine</h1>
 
-            <p className="text-[#94A3B8] mt-2 text-xs">
+            <p className="text-[#8B949E] mt-2 text-xs">
               Core logic for inter-agent communication and consensus-building
               algorithms.
             </p>
@@ -57,9 +57,9 @@
           </div>
 
           <div className="glass h-[130px] w-[284px] p-5 lg:mt-10 mt-5 rounded-4xl">
-            <h1 className="text-lg font-bold">Sector Specializations</h1>
+            <h1 className="text-lg font-bold text-gray-200">Sector Specializations</h1>
 
-            <p className="text-[#94A3B8] mt-2 text-xs">
+            <p className="text-[#8B949E] mt-2 text-xs">
               Launch of the Healthcare, Legal, and FinTech specialized Council
               members.
             </p>
@@ -85,9 +85,9 @@
           </div>
 
           <div className="glass h-[130px] w-[284px] p-5 lg:mt-10 mt-5 rounded-4xl">
-            <h1 className="text-lg font-bold">Private Edge Nodes</h1>
+            <h1 className="text-lg font-bold text-gray-200">Private Edge Nodes</h1>
 
-            <p className="text-[#94A3B8] mt-2 text-xs">
+            <p className="text-[#8B949E] mt-2 text-xs">
               On-premise deployment for enterprise- grade security and
               proprietary data handling.
             </p>
@@ -111,21 +111,21 @@
                 height="46"
                 rx="23"
                 stroke="white"
-                stroke-opacity="0.2"
-                stroke-width="2"
+                strokeOpacity="0.2"
+                strokeWidth="2"
               />
               <path
                 d="M18.912 29.724C17.504 29.724 16.384 29.3373 15.552 28.564C14.72 27.7907 14.304 26.684 14.304 25.244V22.556C14.304 21.116 14.72 20.0093 15.552 19.236C16.384 18.4627 17.504 18.076 18.912 18.076C20.32 18.076 21.44 18.4627 22.272 19.236C23.104 20.0093 23.52 21.116 23.52 22.556V25.244C23.52 26.684 23.104 27.7907 22.272 28.564C21.44 29.3373 20.32 29.724 18.912 29.724ZM18.912 27.836C19.7013 27.836 20.3147 27.6067 20.752 27.148C21.1893 26.6893 21.408 26.076 21.408 25.308V22.492C21.408 21.724 21.1893 21.1107 20.752 20.652C20.3147 20.1933 19.7013 19.964 18.912 19.964C18.1333 19.964 17.5227 20.1933 17.08 20.652C16.6373 21.1107 16.416 21.724 16.416 22.492V25.308C16.416 26.076 16.6373 26.6893 17.08 27.148C17.5227 27.6067 18.1333 27.836 18.912 27.836ZM19.648 32.38C19.1253 32.38 18.7013 32.2173 18.376 31.892C18.0507 31.5667 17.888 31.132 17.888 30.588V29.5H19.936V30.268C19.936 30.588 20.0853 30.748 20.384 30.748H21.328V32.38H19.648ZM30.24 29.5V27.228H24.736V24.86L28.608 18.3H32.288V25.404H34.144V27.228H32.288V29.5H30.24ZM26.688 25.404H30.24V19.612H29.952L26.688 25.148V25.404Z"
                 fill="white"
-                fill-opacity="0.5"
+                fillOpacity="0.5"
               />
             </svg>
           </div>
 
           <div className="glass h-[130px] w-[284px] p-5 lg:mt-10 mt-5 rounded-4xl">
-            <h1 className="text-lg font-bold">Autonomous Governance</h1>
+            <h1 className="text-lg font-bold text-gray-200">Autonomous Governance</h1>
 
-            <p className="text-[#94A3B8] mt-2 text-xs">
+            <p className="text-[#8B949E] mt-2 text-xs">
               Self-optimizing agent pools that adapt to user feedback cycles
               automatically.
             </p>
