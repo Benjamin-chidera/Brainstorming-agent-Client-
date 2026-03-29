@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 export interface Agent {
   id: string;
+  name?: string;
   voice: string;
   accent: string;
   tone: string;
