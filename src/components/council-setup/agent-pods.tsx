@@ -60,7 +60,7 @@ export const AgentPods = () => {
           {isCouncilCreated && (
             <Button
               variant="outline"
-              className="border-[#B6FF3B]/30 text-[#B6FF3B] font-bold hover:bg-[#B6FF3B]/10 hover:border-[#B6FF3B]/60 cursor-pointer transition-all duration-300"
+              className="border-[#B6FF3B]/30 text-[#B6FF3B] bg-[#B6FF3B]/10 font-bold hover:bg-[#B6FF3B]/10 hover:border-[#B6FF3B]/60 cursor-pointer transition-all duration-300"
               onClick={() => setShowCouncilOverview(true)}
             >
               <Users className="size-4 mr-1" />

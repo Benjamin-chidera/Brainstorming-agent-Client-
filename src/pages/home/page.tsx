@@ -39,7 +39,7 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <p className="md:text-sm text-xs font-semibold whitespace-nowrap">
+              <p className="md:text-sm text-xs font-semibold whitespace-nowrap text-white">
                 Council Feedback Loop{" "}
               </p>
               <p className="md:text-sm text-[10px]  text-[#8B949E] whitespace-nowrap">

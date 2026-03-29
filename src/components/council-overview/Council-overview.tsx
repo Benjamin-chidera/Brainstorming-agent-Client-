@@ -10,6 +10,8 @@ import { useCouncilSetupStore } from "@/store/council-setup.store";
 import { PowerIcon, X, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useMeetingStore } from "@/store/meeting.store";
+import { toast } from "sonner";
 
 export const CouncilOverview = () => {
   const {
@@ -17,19 +19,40 @@ export const CouncilOverview = () => {
     setShowCouncilOverview,
     agents,
     isMeetingStarted,
-    setIsMeetingStarted,
     deleteAgent,
   } = useCouncilSetupStore();
+
+  const { startMeeting, checkActiveMeeting } = useMeetingStore();
+  
+  useEffect(() => {
+    if(showCouncilOverview){
+      checkActiveMeeting();
+    }
+  }, [showCouncilOverview, checkActiveMeeting]);
 
   const [radius, setRadius] = useState(200);
   const [hoveredAgentId, setHoveredAgentId] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
-  const handleStartOrContinue = () => {
-    setIsMeetingStarted(true);
-    navigate("/live-meeting-room");
-    setShowCouncilOverview(false);
+  const handleStartOrContinue = async () => {
+    // Filter out agents that are uncreated (isNew === true)
+    const validAgents = agents.filter((agent) => !agent.isNew);
+
+    if (validAgents.length === 0) {
+      toast.error("Please Update Council to save the new agents first.");
+      return;
+    }
+
+    if (validAgents.length < agents.length) {
+      toast.warning(
+        "Some new agents have not been configured/saved. Only saved agents will join the meeting."
+      );
+    }
+
+    const agentIds = validAgents.map((agent) => agent.id);
+    // console.log(agentIds);
+    await startMeeting(agentIds);
   };
 
   const handleDeleteAgent = async (e: React.MouseEvent, agentId: string) => {
@@ -97,6 +120,8 @@ export const CouncilOverview = () => {
               const y = Math.sin(angle) * radius;
               const isHovered = hoveredAgentId === agent.id;
 
+              // console.log(agent.id);
+
               return (
                 <div
                   key={agent.id}
@@ -155,7 +180,7 @@ export const CouncilOverview = () => {
           </div>
 
           <AlertDialogFooter className="absolute top-2 right-2">
-            <AlertDialogCancel className="bg-transparent border-none">
+            <AlertDialogCancel className="bg-yellow-300 hover:bg-yellow-400 border-none">
               <X />
             </AlertDialogCancel>
           </AlertDialogFooter>

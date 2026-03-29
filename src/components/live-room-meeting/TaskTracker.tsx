@@ -63,7 +63,7 @@ export const TaskTracker = () => {
   const [now, setNow] = useState(Date.now());
   const [viewResultDialog, setViewResultDialog] = useState(false);
 
-  console.log(now);
+  // console.log(now);
 
   useEffect(() => {
     const hasActiveTask = TASKS.some((t) => t.status === "in-progress");

@@ -46,7 +46,7 @@ export const Auth = () => {
               </AlertDialogCancel>
             </AlertDialogFooter>
 
-            <AlertDialogTitle className=" text-center">
+            <AlertDialogTitle className=" text-center text-white">
               {isLogin ? "Welcome Back" : "Join the Council"}
             </AlertDialogTitle>
             <AlertDialogDescription className=" text-center">

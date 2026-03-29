@@ -5,8 +5,7 @@ import { SetupSlider } from "@/components/council-setup/setup-slider";
 // import { VoiceGlow } from "@/components/council-setup/voice-glow";
 import { CouncilOverview } from "@/components/council-overview/Council-overview";
 import { Mic, SlidersHorizontal } from "lucide-react";
-
-
+import { VoiceGlow } from "@/components/council-setup/voice-glow";
 
 type Phase = "voice" | "manual";
 
@@ -75,20 +74,17 @@ export default function CouncilSetup() {
       {/* Phase Content */}
       <AnimatePresence mode="wait">
         {phase === "voice" ? (
-          // <motion.div
-          //   key="voice"
-          //   initial={{ opacity: 0, y: 20 }}
-          //   animate={{ opacity: 1, y: 0 }}
-          //   exit={{ opacity: 0, y: -20 }}
-          //   transition={{ duration: 0.4 }}
-          // >
-          //   <section className="glass w-full p-6 rounded-2xl min-h-[500px] flex items-center justify-center">
-          //     <VoiceGlow onComplete={() => setPhase("manual")} />
-          //   </section>
-          // </motion.div>
-          <div>
-            voice
-          </div>
+          <motion.div
+            key="voice"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+          >
+            <section>
+              <VoiceGlow />
+            </section>
+          </motion.div>
         ) : (
           <motion.div
             key="manual"

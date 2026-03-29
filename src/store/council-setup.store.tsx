@@ -159,12 +159,16 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
   summonCouncil: async () => {
     const { agents, isCouncilCreated } = get();
 
-    // If council exists, only POST the locally new agents to join the existing ones
-    const agentsToCreate = isCouncilCreated
+    const agentsToCreate = (isCouncilCreated
       ? agents.filter((a) => a.isNew)
-      : agents;
+      : agents
+    ).filter((a) => a.bio && a.bio.trim() !== "");
 
-    if (agentsToCreate.length === 0) return;
+    if (agentsToCreate.length === 0) {
+      toast.error("Please ensure the agents you want to create have a bio.");
+      return;
+    }
+
 
     const agentsPayload = agentsToCreate.map(
       ({ voice, accent, tone, gender, avatarUrl, bio }) => ({
@@ -278,30 +282,40 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
     });
   },
 
-  handleGenerateIntro: async (agentId: string) => {
-    const { agents } = get();
-    const targetAgent = agents.find((a) => a.id === agentId);
-    if (!targetAgent || !targetAgent.bio) return null;
+ handleGenerateIntro: async (agentId: string) => {
+  const { agents } = get();
+  const targetAgent = agents.find((a) => a.id === agentId);
+  
+  if (!targetAgent || !targetAgent.bio) return null;
 
-    try {
-      const client = new Mistral({
-        apiKey: import.meta.env.VITE_MISTRAL_API_KEY,
-      });
+  try {
+    const client = new Mistral({
+      apiKey: import.meta.env.VITE_MISTRAL_API_KEY,
+    });
 
-      const chatResponse = await client.chat.complete({
-        model: "mistral-medium-latest",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a helpful assistant. You have to generate a short introduction for the agent based on the bio provided. The introduction should be personalized and engaging. The introduction should be in first person.",
-          },
-          {
-            role: "user",
-            content: targetAgent.bio,
-          },
-        ],
-      });
+    const chatResponse = await client.chat.complete({
+      model: "mistral-medium-latest",
+      messages: [
+       {
+          role: "system",
+          content: `You are a professional persona architect. Your task is to write a high-impact, first-person introduction for an agent.
+
+          STRICT GUIDELINES:
+          1. IDENTITY: If the bio does not include a name, invent a professional and fitting name for the agent related to their gender.
+          2. SKILLS: If the bio lacks specific skills, infer 3-4 high-level skills based on the agent's implied role and mention them naturally.
+          3. VOICE: Write in the first person ("I am..."). Be charismatic and authoritative.
+          4. STRUCTURE: Start with the name/identity, follow with a "hook" about their expertise, and conclude with how they help.
+          5. LENGTH: Keep it under 60 words. No "AI-speak" or corporate fluff.`
+        },
+        {
+          role: "user",
+          content: `Agent Bio: ${targetAgent.bio + "Gender: " + targetAgent.gender}`,
+        },
+      ],
+      // Adding a max_tokens limit keeps the intro short and saves on costs
+      maxTokens: 100, 
+      temperature: 0.7,
+    });
 
       const content = chatResponse.choices?.[0]?.message?.content;
       const intro =
