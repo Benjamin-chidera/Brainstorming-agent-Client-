@@ -1,12 +1,12 @@
 export const LiveTranscript = () => {
   return (
-    <main className="glass p-5 rounded-3xl w-full max-w-[900px] h-[180px] mx-auto border border-white/5 shadow-2xl backdrop-blur-3xl group transition-all duration-500 overflow-hidden">
+    <main className="glass p-5 rounded-3xl w-full max-w-[900px] h-[180px] mx-auto border border-white/5 shadow-2xl backdrop-blur-3xl group transition-all duration-500 overflow-hidden hover:border-[#B6FF3B]">
       <div className="flex items-center justify-between mb-3 border-b border-white/10 pb-3">
         <h1 className="text-xs font-black text-white flex items-center gap-3 tracking-[0.2em] uppercase">
           <div className="flex items-end gap-0.5 h-4">
-            <div className="w-1 bg-[#7F0DF2] animate-[sound_0.8s_ease-in-out_infinite] h-2"></div>
-            <div className="w-1 bg-[#7F0DF2] animate-[sound_1.1s_ease-in-out_infinite] h-4"></div>
-            <div className="w-1 bg-[#7F0DF2] animate-[sound_0.9s_ease-in-out_infinite] h-3"></div>
+            <div className="w-1 bg-[#B6FF3B] animate-[sound_0.8s_ease-in-out_infinite] h-2"></div>
+            <div className="w-1 bg-[#B6FF3B] animate-[sound_1.1s_ease-in-out_infinite] h-4"></div>
+            <div className="w-1 bg-[#B6FF3B] animate-[sound_0.9s_ease-in-out_infinite] h-3"></div>
           </div>
           Live Transcript
         </h1>

@@ -10,7 +10,7 @@ export const MeetingController = () => {
             <Video />
           </Button>
 
-          <p className=" text-[7px] uppercase mt-1">Video</p>
+          <p className=" text-[7px] uppercase mt-1 text-white">Video</p>
         </div>
 
         <div>
@@ -18,7 +18,7 @@ export const MeetingController = () => {
             <Mic />
           </Button>
 
-          <p className=" text-[7px] uppercase mt-1">  Speak</p>
+          <p className=" text-[7px] uppercase mt-1 text-white">  Speak</p>
         </div>
 
         <div>
@@ -26,7 +26,7 @@ export const MeetingController = () => {
             <Share />
           </Button>
 
-          <p className=" text-[7px] uppercase mt-1">Share</p>
+          <p className=" text-[7px] uppercase mt-1 text-white">Share</p>
         </div>
       </section>
 
