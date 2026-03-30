@@ -1,6 +1,6 @@
 import { useCouncilSetupStore } from "@/store/council-setup.store";
 import { MuteBtn } from "./Mute-btn";
-import { Laptop, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 
 export const InviteAgents = () => {

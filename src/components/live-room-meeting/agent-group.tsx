@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCouncilSetupStore } from "@/store/council-setup.store";
 import {
   HoverCard,
