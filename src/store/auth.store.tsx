@@ -30,6 +30,7 @@ interface AuthState {
   user: string | null;
   setUser: (user: string | null) => void;
   isAuth: boolean;
+  isCheckingAuth: boolean;
   setInitialized: (isAuth: boolean) => void;
 
   // logout
@@ -59,6 +60,7 @@ export const useAuthStore = create<AuthState>()(
       // user
       user: null,
       isAuth: false,
+      isCheckingAuth: true,
       setUser: (user: string | null) => set({ user }),
       setInitialized: (isAuth: boolean) => set({ isAuth }),
 
@@ -133,20 +135,21 @@ export const useAuthStore = create<AuthState>()(
 
       getUser: async () => {
         const { user, isAuth } = get();
-        if (user && isAuth) return;
+        if (user && isAuth) {
+           set({ isCheckingAuth: false });
+           return;
+        }
 
         try {
           const { data } = await axios.get(
             `${import.meta.env.VITE_API_URL}/auth/me`,
           );
           if (data) {
-            // console.log(data);
-
-            set({ user: data, isAuth: true });
+            set({ user: data, isAuth: true, isCheckingAuth: false });
           }
         } catch (error: any) {
           // If 401, we just set user to null but mark initialized as true
-          set({ user: null, isAuth: false });
+          set({ user: null, isAuth: false, isCheckingAuth: false });
         }
       },
 

@@ -23,13 +23,15 @@ export const InviteAgents = () => {
                 key={agent.id}
                 className="flex items-center justify-between gap-3 p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
               >
-                <div className="p-1.5 bg-[#7F0DF2]/20 rounded-full border border-[#7F0DF2]/30 flex items-center justify-center">
+                {/* <div className="p-1.5 bg-[#7F0DF2]/20 rounded-full border border-[#7F0DF2]/30 flex items-center justify-center">
                   <Laptop size={14} className="text-[#7F0DF2]" />
-                </div>
+                </div> */}
                 <div className="flex-1 min-w-0">
-                  <p className="capitalize text-xs font-medium truncate text-white/90">
+                  {/* <p className="capitalize text-xs font-medium truncate text-white/90">
                     {agent.name}
-                  </p>
+                  </p> */}
+
+                  <img src={agent.avatarUrl } alt="" className="w-10 h-10  object-cover rounded-full" />
                 </div>
                 <div>
                   <MuteBtn />
@@ -41,7 +43,7 @@ export const InviteAgents = () => {
 
         {agents.length < 10 && (
           <div className="p-2 border-t border-white/5">
-            <Button className="text-xs h-9 cursor-pointer w-full bg-[#7F0DF2] hover:bg-[#7F0DF2]/90 transition-all rounded-xl shadow-[0_0_15px_rgba(127,13,242,0.3)]">
+            <Button className="text-xs text-black font-bold h-9 cursor-pointer w-full bg-[#B6FF3B] hover:bg-[#B6FF3B]/90 transition-all rounded-xl shadow-[0_0_15px_rgba(127,13,242,0.3)]">
               <Plus size={16} />
               <span>Invite Agent</span>
             </Button>

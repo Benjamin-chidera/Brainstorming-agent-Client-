@@ -22,7 +22,7 @@ function App() {
   }, []);
   
   return (
-    <main className=" pt-5">
+    <main className=" pt-20">
       <div
         className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
         style={{

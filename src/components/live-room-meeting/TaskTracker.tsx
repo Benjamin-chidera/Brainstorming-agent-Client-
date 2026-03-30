@@ -63,7 +63,7 @@ export const TaskTracker = () => {
   const [now, setNow] = useState(Date.now());
   const [viewResultDialog, setViewResultDialog] = useState(false);
 
-  // console.log(now);
+  console.log(now);
 
   useEffect(() => {
     const hasActiveTask = TASKS.some((t) => t.status === "in-progress");
@@ -80,7 +80,7 @@ export const TaskTracker = () => {
     <div className="w-full max-w-md space-y-4">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-white font-black text-lg tracking-tight flex items-center gap-2">
-          <div className="size-2 bg-[#7F0DF2] rounded-full animate-pulse shadow-[0_0_10px_#7F0DF2]" />
+          <div className="size-2 bg-[#B6FF3B] rounded-full animate-pulse shadow-[0_0_10px_#B6FF3B]" />
           ACTIVE TASKS
         </h3>
         <span className="text-white/40 text-[10px] uppercase font-bold tracking-widest">
@@ -93,14 +93,14 @@ export const TaskTracker = () => {
           TASKS.map((task) => (
             <div
               key={task.id}
-              className="group relative bg-[#050505]/40 backdrop-blur-xl border border-white/5 rounded-2xl p-4 transition-all duration-500 hover:border-[#7F0DF2]/40 hover:bg-[#050505]/60 hover:shadow-[0_0_30px_rgba(127,13,242,0.1)]"
+              className="group relative bg-[#050505]/40 backdrop-blur-xl border border-white/5 rounded-2xl p-4 transition-all duration-500 hover:border-[#B6FF3B]/40 hover:bg-[#050505]/60 hover:shadow-[0_0_30px_rgba(127,13,242,0.1)]"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div
                     className={`p-2 rounded-xl border ${
                       task.status === "completed"
-                        ? "bg-[#7F0DF2]/10 border-[#7F0DF2]/20 text-[#7F0DF2]"
+                        ? "bg-[#B6FF3B]/10 border-[#B6FF3B]/20 text-[#B6FF3B]"
                         : task.status === "in-progress"
                           ? "bg-blue-500/10 border-blue-500/20 text-blue-400"
                           : "bg-white/5 border-white/10 text-white/30"
@@ -115,7 +115,7 @@ export const TaskTracker = () => {
                     )}
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-[#7F0DF2] transition-colors">
+                    <h4 className="text-sm font-bold text-white group-hover:text-[#B6FF3B] transition-colors">
                       {task.title}
                     </h4>
                     <p className="text-[10px] text-white/40 font-medium">
@@ -128,7 +128,7 @@ export const TaskTracker = () => {
                   <span
                     className={`text-xs font-black ${
                       task.status === "completed"
-                        ? "text-[#7F0DF2]"
+                        ? "text-[#B6FF3B]"
                         : "text-white/60"
                     }`}
                   >
@@ -142,8 +142,8 @@ export const TaskTracker = () => {
                 <div
                   className={`absolute top-0 left-0 h-full transition-all duration-1000 ease-out rounded-full ${
                     task.status === "completed"
-                      ? "bg-[#7F0DF2]"
-                      : "bg-linear-to-r from-[#7F0DF2] to-blue-500"
+                      ? "bg-[#B6FF3B]"
+                      : "bg-linear-to-r from-[#B6FF3B] to-[#B6FF3B]"
                   }`}
                   style={{ width: `${task.progress}%` }}
                 >
@@ -206,7 +206,7 @@ export const TaskTracker = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 text-[10px] font-black uppercase tracking-wider text-[#7F0DF2] hover:bg-[#7F0DF2]/5 border border-[#7F0DF2]/20 rounded-lg flex-1"
+                            className="h-8 text-[10px] font-black uppercase tracking-wider text-white/60 hover:text-white hover:bg-[#7F0DF2]/5 border border-[#7F0DF2]/20 rounded-lg flex-1"
                           >
                             <Mail size={12} className="mr-1.5" />
                             Email
@@ -240,7 +240,7 @@ export const TaskTracker = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 text-[10px] font-black uppercase tracking-wider text-[#7F0DF2] hover:bg-[#7F0DF2]/5 border border-[#7F0DF2]/20 rounded-lg flex-1"
+                    className="h-8 text-[10px] font-black uppercase tracking-wider text-white/60 hover:text-white hover:bg-white/5 border border-white/5 rounded-lg flex-1"
                   >
                     <Mail size={12} className="mr-1.5" />
                     Email

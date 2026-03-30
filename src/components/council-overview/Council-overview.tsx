@@ -52,7 +52,10 @@ export const CouncilOverview = () => {
 
     const agentIds = validAgents.map((agent) => agent.id);
     // console.log(agentIds);
-    await startMeeting(agentIds);
+    const success = await startMeeting(agentIds);
+    if (success) {
+      navigate("/live-meeting-room");
+    }
   };
 
   const handleDeleteAgent = async (e: React.MouseEvent, agentId: string) => {

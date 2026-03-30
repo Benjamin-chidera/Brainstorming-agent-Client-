@@ -5,7 +5,7 @@ export const MuteBtn = () => {
   return (
     <main>
       {" "}
-      <Button className=" bg-transparent hover:bg-transparent">
+      <Button className=" bg-transparent hover:bg-transparent border border-white/10 rounded-full">
         <MicOff size={15} />
         {/* <MicIcon  size={15}/> */}
       </Button>
