@@ -4,8 +4,7 @@ import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 
 export const InviteAgents = () => {
-  const { agents } =
-    useCouncilSetupStore();
+  const { agents } = useCouncilSetupStore();
 
   console.log(agents);
 
@@ -31,7 +30,11 @@ export const InviteAgents = () => {
                     {agent.name}
                   </p> */}
 
-                  <img src={agent.avatarUrl } alt="" className="w-10 h-10  object-cover rounded-full" />
+                  <img
+                    src={agent.avatarUrl}
+                    alt=""
+                    className="w-10 h-10  object-cover rounded-full"
+                  />
                 </div>
                 <div>
                   <MuteBtn />

@@ -58,7 +58,7 @@ function App() {
 
           <Route element={<Protect isAuth={isAuth} />}>
             <Route path="/council-setup" element={<CouncilSetup />} />
-            <Route path="/live-meeting-room" element={<LiveMeetingRoom />} />
+            <Route path="/live-meeting-room/:meetingId" element={<LiveMeetingRoom />} />
           </Route>
         </Routes>
       </BrowserRouter>

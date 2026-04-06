@@ -115,7 +115,7 @@ export const TaskTracker = () => {
                     )}
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-[#B6FF3B] transition-colors">
+                    <h4 className="text-[12px] font-bold text-white group-hover:text-[#B6FF3B] transition-colors">
                       {task.title}
                     </h4>
                     <p className="text-[10px] text-white/40 font-medium">

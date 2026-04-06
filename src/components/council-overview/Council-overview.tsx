@@ -23,6 +23,9 @@ export const CouncilOverview = () => {
   } = useCouncilSetupStore();
 
   const { startMeeting, checkActiveMeeting } = useMeetingStore();
+
+  console.log(isMeetingStarted);
+  
   
   useEffect(() => {
     if(showCouncilOverview){
@@ -32,15 +35,17 @@ export const CouncilOverview = () => {
 
   const [radius, setRadius] = useState(200);
   const [hoveredAgentId, setHoveredAgentId] = useState<string | null>(null);
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleStartOrContinue = async () => {
+    setLoading(true);
     // Filter out agents that are uncreated (isNew === true)
     const validAgents = agents.filter((agent) => !agent.isNew);
 
     if (validAgents.length === 0) {
       toast.error("Please Update Council to save the new agents first.");
+      setLoading(false);
       return;
     }
 
@@ -51,11 +56,13 @@ export const CouncilOverview = () => {
     }
 
     const agentIds = validAgents.map((agent) => agent.id);
-    // console.log(agentIds);
-    const success = await startMeeting(agentIds);
-    if (success) {
-      navigate("/live-meeting-room");
+    const meetingId = await startMeeting(agentIds);
+    if (meetingId && validAgents.length === agents.length) {
+      navigate(`/live-meeting-room/${meetingId}`);
+    }else{
+      setShowCouncilOverview(true);
     }
+    setLoading(false);
   };
 
   const handleDeleteAgent = async (e: React.MouseEvent, agentId: string) => {
@@ -103,14 +110,15 @@ export const CouncilOverview = () => {
               }}
             >
               {/* Power icon + Start/Continue button */}
-              <div className="border border-dashed border-white/10 rounded-full flex flex-col items-center justify-center h-[160px] w-[160px] sm:h-[210px] sm:w-[210px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="shadow-[0_0_50px_rgba(182,255,59,0.2)] border border-white/10 rounded-full p-2 flex flex-col items-center justify-center h-[150px] w-[150px] sm:h-[200px] sm:w-[200px]">
-                  <PowerIcon size={20} className="text-[#B6FF3B] mb-2" />
+              <div className="border border-dashed border-white/10 rounded-full flex flex-col items-center justify-center h-[200px] w-[200px] sm:h-[260px] sm:w-[260px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="shadow-[0_0_50px_rgba(182,255,59,0.2)] border border-white/10 rounded-full p-4 flex flex-col items-center justify-center h-[180px] w-[180px] sm:h-[230px] sm:w-[230px] gap-2">
+                  <PowerIcon size={20} className="text-[#B6FF3B] mb-1" />
                   <Button
-                    className="bg-[#B6FF3B] text-[#0D1117] font-bold hover:bg-[#B6FF3B]/90 cursor-pointer h-9 rounded-full w-full text-xs sm:text-sm"
+                    className="bg-[#B6FF3B] text-[#0D1117] font-bold hover:bg-[#B6FF3B]/90 cursor-pointer h-9 rounded-full w-full text-[10px] sm:text-xs"
                     onClick={handleStartOrContinue}
+                    disabled={loading}
                   >
-                    {isMeetingStarted ? "Continue Meeting" : "Start Meeting"}
+                    {loading ? "Loading..." : isMeetingStarted ? "Continue Meeting" : "Start Meeting"}
                   </Button>
                 </div>
               </div>
