@@ -4,30 +4,42 @@ import { LiveTranscript } from "@/components/live-room-meeting/Live-transcript";
 import { MeetingController } from "@/components/live-room-meeting/Meeting-controller";
 import { TaskTracker } from "@/components/live-room-meeting/TaskTracker";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useCouncilSetupStore } from "@/store/council-setup.store";
 import { useMeetingStore } from "@/store/meeting.store";
+import { socket } from "@/store/socket.io";
 
 export default function LiveMeetingRoom() {
   const navigate = useNavigate();
+  const { meetingId: urlId } = useParams();
   const { fetchCouncil } = useCouncilSetupStore();
-  const { checkActiveMeeting } = useMeetingStore();
+  const { checkActiveMeeting, fetchMeetingDetails, meetingId, initSocketListeners } = useMeetingStore();
 
   useEffect(() => {
     const initializeRoom = async () => {
-      // 1. Fetch agents if they were lost on refresh
       await fetchCouncil();
-      // 2. Check if meeting is genuinely running on the backend
-      const isActive = await checkActiveMeeting();
-      
-      // 3. Kick back to council setup if no active meeting exists
+
+      let isActive = false;
+      if (urlId) {
+        isActive = await fetchMeetingDetails(urlId);
+      } else {
+        isActive = await checkActiveMeeting();
+      }
+
       if (!isActive) {
         navigate("/council-setup");
       }
     };
 
     initializeRoom();
-  }, [fetchCouncil, checkActiveMeeting, navigate]);
+
+    return () => {
+      socket.off("chat_update");
+      socket.off("agent_typing");
+      socket.off("system_message");
+      socket.off("meeting_ended");
+    };
+  }, [fetchCouncil, checkActiveMeeting, fetchMeetingDetails, navigate, urlId, meetingId, initSocketListeners]);
 
   return (
     <main className="2xl:container w-full px-4 lg:w-11/12 mx-auto">
