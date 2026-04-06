@@ -17,8 +17,11 @@ interface MeetingState {
   fetchMeetingDetails: (id: string) => Promise<boolean>;
   endMeeting: () => Promise<void>;
   sendMessage: (content: string) => void;
+  sendAudio: (blob: Blob) => void;
+  stopAgentAudio: () => void;
   live_meeting_api: () => Promise<any>;
   isMeetingActive: boolean;
+  isRecording: boolean;
   meetingId: string | null;
   meetingUrl: string | null;
   messages: MeetingMessage[];
@@ -26,10 +29,68 @@ interface MeetingState {
   userMessage: string;
   isProcessing: boolean;
   setUserMessage: (msg: string) => void;
+  setIsRecording: (val: boolean) => void;
+
   addMessage: (msg: MeetingMessage) => void;
   initSocketListeners: (mid: string) => void;
   setMeetingUrl: (url: string) => void;
 }
+
+// ── Agent audio playback queue ────────────────────────────────────────────────
+// Kept outside Zustand so it doesn't trigger re-renders.
+const _audioQueue: string[] = [];
+let _isPlaying = false;
+let _currentSource: AudioBufferSourceNode | null = null;
+let _currentCtx: AudioContext | null = null;
+
+/** Stop any currently playing agent audio and clear the queue. */
+function _stopAgentAudio() {
+  _audioQueue.length = 0;
+  try { _currentSource?.stop(); } catch {}
+  _currentSource = null;
+  if (_currentCtx) { _currentCtx.close(); _currentCtx = null; }
+  _isPlaying = false;
+}
+
+async function _playNextAudio() {
+  if (_isPlaying || _audioQueue.length === 0) return;
+  _isPlaying = true;
+  const b64 = _audioQueue.shift()!;
+
+  try {
+    const bytes = atob(b64);
+    const buf = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) buf[i] = bytes.charCodeAt(i);
+
+    const ctx = new AudioContext();
+    _currentCtx = ctx;
+    const decoded = await ctx.decodeAudioData(buf.buffer);
+    const source = ctx.createBufferSource();
+    _currentSource = source;
+    source.buffer = decoded;
+    source.connect(ctx.destination);
+    source.onended = () => {
+      _isPlaying = false;
+      _currentSource = null;
+      ctx.close();
+      _currentCtx = null;
+      _playNextAudio();
+    };
+    source.start();
+  } catch (err) {
+    console.error("[Audio] Playback error:", err);
+    _isPlaying = false;
+    _currentSource = null;
+    _currentCtx = null;
+    _playNextAudio();
+  }
+}
+
+function _enqueueAudio(b64: string) {
+  _audioQueue.push(b64);
+  _playNextAudio();
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const useMeetingStore = create<MeetingState>((set, get) => ({
   meetingId: null,
@@ -38,11 +99,27 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
   participants: [],
   userMessage: "",
   isMeetingActive: false,
+  isRecording: false,
   isProcessing: false,
 
   setMeetingUrl: (url) => set({ meetingUrl: url }),
-
   setUserMessage: (msg) => set({ userMessage: msg }),
+  setIsRecording: (val) => set({ isRecording: val }),
+  stopAgentAudio: () => _stopAgentAudio(),
+
+  sendAudio: (blob: Blob) => {
+    const { meetingId } = get();
+    if (!meetingId) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      // Strip the data:audio/...;base64, prefix
+      const b64 = dataUrl.includes(",") ? dataUrl.split(",")[1] : dataUrl;
+      socket.emit("user_audio", { meeting_id: meetingId, audio: b64 });
+    };
+    reader.readAsDataURL(blob);
+  },
 
   sendMessage: (content) => {
     const { meetingId } = get();
@@ -110,6 +187,7 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
     socket.off("agent_typing");
     socket.off("system_message");
     socket.off("meeting_ended");
+    socket.off("agent_audio");
 
     // Spec: Connect Socket.IO and EMIT join_meeting.
     socket.emit("join_meeting", { meeting_id: mid });
@@ -140,6 +218,10 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
       set({ isMeetingActive: false, meetingId: null });
       const { setIsMeetingStarted } = useCouncilSetupStore.getState();
       setIsMeetingStarted(false);
+    });
+
+    socket.on("agent_audio", (data: { sender: string; audio: string }) => {
+      if (data.audio) _enqueueAudio(data.audio);
     });
   },
 

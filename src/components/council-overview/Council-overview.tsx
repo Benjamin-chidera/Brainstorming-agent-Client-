@@ -57,8 +57,10 @@ export const CouncilOverview = () => {
 
     const agentIds = validAgents.map((agent) => agent.id);
     const meetingId = await startMeeting(agentIds);
-    if (meetingId) {
+    if (meetingId && validAgents.length === agents.length) {
       navigate(`/live-meeting-room/${meetingId}`);
+    }else{
+      setShowCouncilOverview(true);
     }
     setLoading(false);
   };

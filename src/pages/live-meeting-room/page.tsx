@@ -42,9 +42,9 @@ export default function LiveMeetingRoom() {
   }, [fetchCouncil, checkActiveMeeting, fetchMeetingDetails, navigate, urlId, meetingId, initSocketListeners]);
 
   return (
-    <main className="2xl:container w-full px-4 lg:w-11/12 mx-auto">
-      <section className="grid grid-cols-1 lg:grid-cols-[1.5fr_3fr_1.5fr] gap-8 items-start w-full">
-        <section className="flex justify-center lg:justify-start">
+    <main className="2xl:container w-11/12 mx-auto pb-5">
+      <section className="flex flex-wrap md:justify-between sm:justify-center items-start">
+        <section className="flex justify-center lg:justify-start w-full lg:w-auto">
           <InviteAgents />
         </section>
 
@@ -52,7 +52,7 @@ export default function LiveMeetingRoom() {
           <AgentGroup />
         </section>
 
-        <section className="flex justify-center lg:justify-end">
+        <section className="flex justify-center w-full lg:w-auto">
           <TaskTracker />
         </section>
       </section>
@@ -61,7 +61,7 @@ export default function LiveMeetingRoom() {
         <section className="w-full flex justify-center">
           <LiveTranscript />
         </section>
-        <section className="w-full flex justify-center">
+        <section className="flex justify-center w-full lg:w-auto">
           <MeetingController />
         </section>
       </section>
