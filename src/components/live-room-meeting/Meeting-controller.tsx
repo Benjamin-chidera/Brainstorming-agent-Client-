@@ -3,6 +3,7 @@ import { Mic, MicOff, Phone, Share, Video, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
+import { useNavigate } from "react-router-dom";
 
 export const MeetingController = () => {
   const {
@@ -15,12 +16,15 @@ export const MeetingController = () => {
     isProcessing,
   } = useMeetingStore();
 
-  const { isActive, isSpeaking, startListening, stopListening } = useVoiceRecorder({
-    onAudioReady: (blob) => sendAudio(blob),
-    onSpeechStart: () => stopAgentAudio(),   // user speaks → interrupt agents
-    silenceThreshold: 0.05,
-    silenceDuration: 1000,
-  });
+  const navigate = useNavigate();
+
+  const { isActive, isSpeaking, startListening, stopListening } =
+    useVoiceRecorder({
+      onAudioReady: (blob) => sendAudio(blob),
+      onSpeechStart: () => stopAgentAudio(), // user speaks → interrupt agents
+      silenceThreshold: 0.05,
+      silenceDuration: 1000,
+    });
 
   const handleSend = () => {
     if (userMessage.trim()) sendMessage(userMessage);
@@ -37,7 +41,6 @@ export const MeetingController = () => {
 
   return (
     <main className="flex flex-col items-center gap-2 mt-5 mx-auto w-full max-w-lg px-4">
-
       {/* Status indicator */}
       {isActive && (
         <div className="flex items-center gap-2 text-xs">
@@ -71,7 +74,7 @@ export const MeetingController = () => {
             "p-1.5 rounded-full transition-all duration-300",
             userMessage.trim()
               ? "bg-[#B6FF3B] text-[#0D1117] cursor-pointer"
-              : "bg-white/5 text-gray-600 cursor-not-allowed"
+              : "bg-white/5 text-gray-600 cursor-not-allowed",
           )}
         >
           <Send className="size-3" />
@@ -85,7 +88,9 @@ export const MeetingController = () => {
             <Button className="glass rounded-full h-9 w-9" disabled>
               <Video />
             </Button>
-            <p className="text-[7px] uppercase mt-1 text-white text-center">Video</p>
+            <p className="text-[7px] uppercase mt-1 text-white text-center">
+              Video
+            </p>
           </div>
 
           <div>
@@ -97,11 +102,15 @@ export const MeetingController = () => {
                 isActive && isSpeaking
                   ? "bg-[#B6FF3B] text-[#0D1117] shadow-[0_0_14px_#B6FF3B90] scale-105"
                   : isActive
-                  ? "bg-white/10 text-white ring-1 ring-[#B6FF3B]/40"
-                  : "glass"
+                    ? "bg-white/10 text-white ring-1 ring-[#B6FF3B]/40"
+                    : "glass",
               )}
             >
-              {isActive ? <MicOff className="size-4" /> : <Mic className="size-4" />}
+              {isActive ? (
+                <MicOff className="size-4" />
+              ) : (
+                <Mic className="size-4" />
+              )}
             </Button>
             <p className="text-[7px] uppercase mt-1 text-white text-center">
               {isActive ? (isSpeaking ? "Speaking" : "Open") : "Speak"}
@@ -112,7 +121,9 @@ export const MeetingController = () => {
             <Button className="glass rounded-full h-9 w-9" disabled>
               <Share />
             </Button>
-            <p className="text-[7px] uppercase mt-1 text-white text-center">Share</p>
+            <p className="text-[7px] uppercase mt-1 text-white text-center">
+              Share
+            </p>
           </div>
         </section>
 
@@ -120,7 +131,14 @@ export const MeetingController = () => {
 
         <section>
           <Button
-            onClick={() => endMeeting()}
+            onClick={() => {
+              stopListening();
+              endMeeting();
+
+              setTimeout(() => {
+                navigate("/council-setup");
+              }, 1000);
+            }}
             className="bg-red-500 text-white font-bold hover:bg-red-600 cursor-pointer h-10 rounded-full w-full"
           >
             <Phone /> End Meeting

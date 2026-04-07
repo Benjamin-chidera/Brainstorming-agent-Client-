@@ -48,7 +48,7 @@ export default function LiveMeetingRoom() {
           <InviteAgents />
         </section>
 
-        <section className="relative flex items-center justify-center min-h-[400px]">
+        <section className="relative flex items-center justify-center min-h-[400px] mt-10 lg:mt-0">
           <AgentGroup />
         </section>
 
