@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCouncilSetupStore } from "@/store/council-setup.store";
+import { useMeetingStore } from "@/store/meeting.store";
+import { cn } from "@/lib/utils";
 import {
   HoverCard,
   HoverCardContent,
@@ -32,6 +34,7 @@ import {
 
 export const AgentGroup = () => {
   const { agents } = useCouncilSetupStore();
+  const { speakingAgent, participants } = useMeetingStore();
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
@@ -71,7 +74,13 @@ export const AgentGroup = () => {
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius;
 
-        return <AgentItem key={agent.id} agent={agent} x={x} y={y} />;
+        const participant = participants?.find((p: any) => p.id === agent.id);
+        const agentName = participant?.name || "";
+        
+        const isCurrentlySpeaking = 
+          speakingAgent?.trim().toLowerCase() === agentName.trim().toLowerCase();
+
+        return <AgentItem key={agent.id} agent={agent} x={x} y={y} isSpeaking={isCurrentlySpeaking} />;
       })}
       <style>{`
         @keyframes float {
@@ -83,7 +92,7 @@ export const AgentGroup = () => {
   );
 };
 
-const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
+const AgentItem = ({ agent, x, y, isSpeaking }: { agent: any; x: number; y: number; isSpeaking?: boolean }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -102,12 +111,20 @@ const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
       >
         <HoverCardTrigger asChild>
           <div className="relative pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95">
-            <div className="size-14 md:size-16 rounded-full border-2 border-[#B6FF3B]/60 p-0.5 bg-[#050505] backdrop-blur-xl shadow-2xl shadow-[#B6FF3B]/40 transition-all duration-500 group-hover:rotate-12 group-hover:border-[#B6FF3B] animate-[float_6s_ease-in-out_infinite] overflow-hidden">
+            <div className={cn(
+              "size-14 md:size-16 rounded-full border-2 p-0.5 bg-[#050505] backdrop-blur-xl transition-all duration-500 overflow-hidden",
+              isSpeaking 
+                ? "border-[#B6FF3B] shadow-[0_0_30px_#B6FF3B] scale-110 ring-4 ring-[#B6FF3B]/30 animate-pulse" 
+                : "border-[#B6FF3B]/60 shadow-2xl shadow-[#B6FF3B]/40 group-hover:rotate-12 group-hover:border-[#B6FF3B] animate-[float_6s_ease-in-out_infinite]"
+            )}>
               {agent.avatarUrl ? (
                 <img
                   src={agent.avatarUrl}
                   alt="Agent"
-                  className="w-full h-full object-cover rounded-full grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className={cn(
+                    "w-full h-full object-cover rounded-full transition-all duration-500",
+                    isSpeaking ? "grayscale-0" : "grayscale group-hover:grayscale-0"
+                  )}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-xs md:text-sm">

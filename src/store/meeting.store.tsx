@@ -28,7 +28,9 @@ interface MeetingState {
   participants: any[];
   userMessage: string;
   isProcessing: boolean;
+  speakingAgent: string | null;
   setUserMessage: (msg: string) => void;
+  setSpeakingAgent: (name: string | null) => void;
   setIsRecording: (val: boolean) => void;
 
   addMessage: (msg: MeetingMessage) => void;
@@ -38,7 +40,7 @@ interface MeetingState {
 
 // ── Agent audio playback queue ────────────────────────────────────────────────
 // Kept outside Zustand so it doesn't trigger re-renders.
-const _audioQueue: string[] = [];
+const _audioQueue: {b64: string, sender: string}[] = [];
 let _isPlaying = false;
 let _currentSource: AudioBufferSourceNode | null = null;
 let _currentCtx: AudioContext | null = null;
@@ -50,12 +52,15 @@ function _stopAgentAudio() {
   _currentSource = null;
   if (_currentCtx) { _currentCtx.close(); _currentCtx = null; }
   _isPlaying = false;
+  useMeetingStore.getState().setSpeakingAgent(null);
 }
 
 async function _playNextAudio() {
   if (_isPlaying || _audioQueue.length === 0) return;
   _isPlaying = true;
-  const b64 = _audioQueue.shift()!;
+  const {b64, sender} = _audioQueue.shift()!;
+  
+  useMeetingStore.getState().setSpeakingAgent(sender);
 
   try {
     const bytes = atob(b64);
@@ -72,6 +77,7 @@ async function _playNextAudio() {
     source.onended = () => {
       _isPlaying = false;
       _currentSource = null;
+      useMeetingStore.getState().setSpeakingAgent(null);
       ctx.close();
       _currentCtx = null;
       _playNextAudio();
@@ -81,13 +87,14 @@ async function _playNextAudio() {
     console.error("[Audio] Playback error:", err);
     _isPlaying = false;
     _currentSource = null;
+    useMeetingStore.getState().setSpeakingAgent(null);
     _currentCtx = null;
     _playNextAudio();
   }
 }
 
-function _enqueueAudio(b64: string) {
-  _audioQueue.push(b64);
+function _enqueueAudio(b64: string, sender: string) {
+  _audioQueue.push({b64, sender});
   _playNextAudio();
 }
 // ─────────────────────────────────────────────────────────────────────────────
@@ -101,9 +108,11 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
   isMeetingActive: false,
   isRecording: false,
   isProcessing: false,
+  speakingAgent: null,
 
   setMeetingUrl: (url) => set({ meetingUrl: url }),
   setUserMessage: (msg) => set({ userMessage: msg }),
+  setSpeakingAgent: (name) => set({ speakingAgent: name }),
   setIsRecording: (val) => set({ isRecording: val }),
   stopAgentAudio: () => _stopAgentAudio(),
 
@@ -221,7 +230,7 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
     });
 
     socket.on("agent_audio", (data: { sender: string; audio: string }) => {
-      if (data.audio) _enqueueAudio(data.audio);
+      if (data.audio) _enqueueAudio(data.audio, data.sender);
     });
   },
 
@@ -314,7 +323,20 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
   endMeeting: async () => {
     const { isMeetingActive, meetingId } = get();
     if (!isMeetingActive) return;
-    set({ isMeetingActive: false, meetingId: null, meetingUrl: null });
+    
+    get().stopAgentAudio();
+    
+    set({ 
+      isMeetingActive: false, 
+      meetingId: null, 
+      meetingUrl: null,
+      messages: [],
+      participants: [],
+      userMessage: "",
+      isProcessing: false,
+      speakingAgent: null
+    });
+    
     socket.emit("end_meeting", { meetingId });
     const { setIsMeetingStarted } = useCouncilSetupStore.getState();
     setIsMeetingStarted(false);
