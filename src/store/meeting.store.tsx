@@ -8,14 +8,16 @@ interface MeetingMessage {
   id: string;
   sender: string;
   text: string;
+  displayedText: string; // progressively revealed as audio plays; equals text when done
   timestamp: number;
 }
 
 interface MeetingState {
-  startMeeting: (agentIds: string[]) => Promise<string | null>;
+  startMeeting: (agentIds: string[], userName?: string) => Promise<string | null>;
   checkActiveMeeting: () => Promise<boolean>;
   fetchMeetingDetails: (id: string) => Promise<boolean>;
   endMeeting: () => Promise<void>;
+  deleteMeeting: (id: string) => Promise<boolean>;
   sendMessage: (content: string) => void;
   sendAudio: (blob: Blob) => void;
   stopAgentAudio: () => void;
@@ -29,9 +31,11 @@ interface MeetingState {
   userMessage: string;
   isProcessing: boolean;
   speakingAgent: string | null;
+  mutedAgents: Set<string>;
   setUserMessage: (msg: string) => void;
   setSpeakingAgent: (name: string | null) => void;
   setIsRecording: (val: boolean) => void;
+  toggleMuteAgent: (agentId: string) => void;
 
   addMessage: (msg: MeetingMessage) => void;
   initSocketListeners: (mid: string) => void;
@@ -44,10 +48,24 @@ const _audioQueue: {b64: string, sender: string}[] = [];
 let _isPlaying = false;
 let _currentSource: AudioBufferSourceNode | null = null;
 let _currentCtx: AudioContext | null = null;
+// Track active word-reveal intervals so we can cancel them on stop
+const _revealIntervals: ReturnType<typeof setInterval>[] = [];
+
+/** Immediately show full text for any messages still pending reveal. */
+function _flushPendingTranscripts() {
+  useMeetingStore.setState((state) => ({
+    messages: state.messages.map((m) =>
+      m.displayedText !== m.text ? { ...m, displayedText: m.text } : m
+    ),
+  }));
+}
 
 /** Stop any currently playing agent audio and clear the queue. */
 function _stopAgentAudio() {
   _audioQueue.length = 0;
+  _revealIntervals.forEach(clearInterval);
+  _revealIntervals.length = 0;
+  _flushPendingTranscripts();
   try { _currentSource?.stop(); } catch {}
   _currentSource = null;
   if (_currentCtx) { _currentCtx.close(); _currentCtx = null; }
@@ -55,12 +73,74 @@ function _stopAgentAudio() {
   useMeetingStore.getState().setSpeakingAgent(null);
 }
 
+/** Find the pending transcript message for a given sender (displayedText still empty). */
+function _findPendingMessage(sender: string) {
+  const { messages } = useMeetingStore.getState();
+  return [...messages].reverse().find(
+    (m) =>
+      m.sender.trim().toLowerCase() === sender.trim().toLowerCase() &&
+      m.displayedText === ""
+  ) ?? null;
+}
+
+/** Reveal the text of a message word-by-word over `durationMs` milliseconds. */
+function _startWordReveal(msgId: string, text: string, durationMs: number) {
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length === 0) return;
+  const msPerWord = Math.max(40, durationMs / words.length);
+  let wordIndex = 0;
+
+  const interval = setInterval(() => {
+    wordIndex++;
+    useMeetingStore.setState((state) => ({
+      messages: state.messages.map((m) =>
+        m.id === msgId
+          ? { ...m, displayedText: words.slice(0, wordIndex).join(" ") }
+          : m
+      ),
+    }));
+    if (wordIndex >= words.length) {
+      clearInterval(interval);
+      const idx = _revealIntervals.indexOf(interval);
+      if (idx !== -1) _revealIntervals.splice(idx, 1);
+    }
+  }, msPerWord);
+
+  _revealIntervals.push(interval);
+}
+
 async function _playNextAudio() {
   if (_isPlaying || _audioQueue.length === 0) return;
+
+  // Skip muted agents — also flush their transcript immediately
+  const { mutedAgents } = useMeetingStore.getState();
+  while (_audioQueue.length > 0) {
+    const peek = _audioQueue[0];
+    const participants: any[] = useMeetingStore.getState().participants;
+    const participant = participants.find(
+      (p: any) => p.name?.trim().toLowerCase() === peek.sender.trim().toLowerCase()
+    );
+    const agentId = participant?.id ?? peek.sender;
+    if (!mutedAgents.has(agentId)) break;
+    // Muted — discard audio but show transcript immediately
+    const pending = _findPendingMessage(peek.sender);
+    if (pending) {
+      useMeetingStore.setState((state) => ({
+        messages: state.messages.map((m) =>
+          m.id === pending.id ? { ...m, displayedText: m.text } : m
+        ),
+      }));
+    }
+    _audioQueue.shift();
+  }
+  if (_audioQueue.length === 0) return;
+
   _isPlaying = true;
-  const {b64, sender} = _audioQueue.shift()!;
-  
+  const { b64, sender } = _audioQueue.shift()!;
   useMeetingStore.getState().setSpeakingAgent(sender);
+
+  // Grab the pending transcript message before audio starts
+  const pendingMsg = _findPendingMessage(sender);
 
   try {
     const bytes = atob(b64);
@@ -74,7 +154,21 @@ async function _playNextAudio() {
     _currentSource = source;
     source.buffer = decoded;
     source.connect(ctx.destination);
+
+    // Start word-by-word reveal synced to audio duration
+    if (pendingMsg) {
+      _startWordReveal(pendingMsg.id, pendingMsg.text, decoded.duration * 1000);
+    }
+
     source.onended = () => {
+      // Ensure full text is visible once audio finishes
+      if (pendingMsg) {
+        useMeetingStore.setState((state) => ({
+          messages: state.messages.map((m) =>
+            m.id === pendingMsg.id ? { ...m, displayedText: m.text } : m
+          ),
+        }));
+      }
       _isPlaying = false;
       _currentSource = null;
       useMeetingStore.getState().setSpeakingAgent(null);
@@ -85,6 +179,14 @@ async function _playNextAudio() {
     source.start();
   } catch (err) {
     console.error("[Audio] Playback error:", err);
+    // On error, reveal text immediately so it's not stuck hidden
+    if (pendingMsg) {
+      useMeetingStore.setState((state) => ({
+        messages: state.messages.map((m) =>
+          m.id === pendingMsg.id ? { ...m, displayedText: m.text } : m
+        ),
+      }));
+    }
     _isPlaying = false;
     _currentSource = null;
     useMeetingStore.getState().setSpeakingAgent(null);
@@ -109,12 +211,44 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
   isRecording: false,
   isProcessing: false,
   speakingAgent: null,
+  mutedAgents: new Set<string>(),
 
   setMeetingUrl: (url) => set({ meetingUrl: url }),
   setUserMessage: (msg) => set({ userMessage: msg }),
   setSpeakingAgent: (name) => set({ speakingAgent: name }),
   setIsRecording: (val) => set({ isRecording: val }),
   stopAgentAudio: () => _stopAgentAudio(),
+
+  toggleMuteAgent: (agentId) => {
+    const { meetingId, mutedAgents } = get();
+    const next = new Set(mutedAgents);
+    const isMuting = !next.has(agentId);
+    if (isMuting) {
+      next.add(agentId);
+    } else {
+      next.delete(agentId);
+    }
+    set({ mutedAgents: next });
+    // Notify the server so it can skip TTS for this agent
+    if (meetingId) {
+      socket.emit(isMuting ? "mute_agent" : "unmute_agent", {
+        meeting_id: meetingId,
+        agent_id: agentId,
+      });
+    }
+    // If we just muted the currently speaking agent, stop their audio
+    if (isMuting) {
+      const { speakingAgent, participants } = get();
+      if (speakingAgent) {
+        const participant = (participants as any[]).find(
+          (p) => p.name?.trim().toLowerCase() === speakingAgent.trim().toLowerCase()
+        );
+        if (participant?.id === agentId || participant == null && speakingAgent === agentId) {
+          _stopAgentAudio();
+        }
+      }
+    }
+  },
 
   sendAudio: (blob: Blob) => {
     const { meetingId } = get();
@@ -202,12 +336,30 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
     socket.emit("join_meeting", { meeting_id: mid });
 
     socket.on("chat_update", (data: { sender: string; text: string }) => {
+      const isAgent = data.sender !== "You" && data.sender !== "System";
+      const msgId = crypto.randomUUID();
       get().addMessage({
-        id: crypto.randomUUID(),
+        id: msgId,
         sender: data.sender || "System",
         text: data.text,
+        // Agent messages start hidden and are revealed word-by-word as audio plays.
+        // User/system messages show immediately.
+        displayedText: isAgent ? "" : data.text,
         timestamp: Date.now(),
       });
+
+      // Fallback: if TTS audio never arrives (e.g., network error), reveal after 5s
+      if (isAgent) {
+        setTimeout(() => {
+          useMeetingStore.setState((state) => ({
+            messages: state.messages.map((m) =>
+              m.id === msgId && m.displayedText === ""
+                ? { ...m, displayedText: m.text }
+                : m
+            ),
+          }));
+        }, 5000);
+      }
     });
 
     socket.on("agent_typing", (data: { typing: boolean }) => {
@@ -219,11 +371,13 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
         id: crypto.randomUUID(),
         sender: "System",
         text: data.text,
+        displayedText: data.text,
         timestamp: Date.now(),
       });
     });
 
     socket.on("meeting_ended", () => {
+      _stopAgentAudio(); // stop audio and flush any pending transcripts
       set({ isMeetingActive: false, meetingId: null });
       const { setIsMeetingStarted } = useCouncilSetupStore.getState();
       setIsMeetingStarted(false);
@@ -234,13 +388,13 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
     });
   },
 
-  startMeeting: async (agentIds: string[]) => {
+  startMeeting: async (agentIds: string[], userName?: string) => {
     const { setShowCouncilOverview, setIsMeetingStarted } =
       useCouncilSetupStore.getState();
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_API_URL}/agents/start-meeting`,
-        { agentIds: agentIds, status: "active" },
+        { agentIds, status: "active", userName },
       );
 
       console.log("Start meeting response:", data);
@@ -334,11 +488,32 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
       participants: [],
       userMessage: "",
       isProcessing: false,
-      speakingAgent: null
+      speakingAgent: null,
+      mutedAgents: new Set<string>(),
     });
     
     socket.emit("end_meeting", { meetingId });
     const { setIsMeetingStarted } = useCouncilSetupStore.getState();
     setIsMeetingStarted(false);
+  },
+  deleteMeeting: async (id: string) => {
+    try {
+      const { data } = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/agents/delete-meeting/${id}`
+      );
+      if (data.success) {
+        toast.success("Meeting deleted successfully");
+        const { meetingId } = get();
+        if (meetingId === id) {
+          get().endMeeting();
+        }
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      console.error("Failed to delete meeting:", error.response?.data?.detail);
+      toast.error(error.response?.data?.detail || "Failed to delete meeting");
+      return false;
+    }
   },
 }));

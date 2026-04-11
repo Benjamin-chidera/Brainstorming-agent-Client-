@@ -1,9 +1,10 @@
 import { useMeetingStore } from "@/store/meeting.store";
-import { Mic, MicOff, Phone, Share, Video, Send } from "lucide-react";
+import { Mic, MicOff, Phone, Share, Video, Send, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
 import { useNavigate } from "react-router-dom";
+import { socket } from "@/store/socket.io";
 
 export const MeetingController = () => {
   const {
@@ -13,15 +14,25 @@ export const MeetingController = () => {
     sendAudio,
     stopAgentAudio,
     endMeeting,
+    deleteMeeting,
+    meetingId,
     isProcessing,
   } = useMeetingStore();
 
   const navigate = useNavigate();
 
+  /** Tell the server to pause the autonomous loop the moment the user starts interacting. */
+  const notifyTyping = () => {
+    if (meetingId) socket.emit("user_typing", { meeting_id: meetingId });
+  };
+
   const { isActive, isSpeaking, startListening, stopListening } =
     useVoiceRecorder({
       onAudioReady: (blob) => sendAudio(blob),
-      onSpeechStart: () => stopAgentAudio(), // user speaks → interrupt agents
+      onSpeechStart: () => {
+        stopAgentAudio();   // stop any playing agent audio immediately
+        notifyTyping();     // pause autonomous loop so agents don't interrupt
+      },
       silenceThreshold: 0.05,
       silenceDuration: 1000,
     });
@@ -63,7 +74,11 @@ export const MeetingController = () => {
         <input
           type="text"
           value={userMessage}
-          onChange={(e) => setUserMessage(e.target.value)}
+          onChange={(e) => {
+            // Cancel agent autonomous loop the moment the user starts typing
+            if (e.target.value && !userMessage) notifyTyping();
+            setUserMessage(e.target.value);
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Transmit a message to the council..."
           className="flex-1 bg-transparent text-xs text-white placeholder:text-gray-500 focus:outline-none"
@@ -129,7 +144,7 @@ export const MeetingController = () => {
 
         <div className="h-10 w-0.5 bg-gray-600 hidden md:block" />
 
-        <section>
+        <section className="flex gap-2">
           <Button
             onClick={() => {
               stopListening();
@@ -141,7 +156,21 @@ export const MeetingController = () => {
             }}
             className="bg-red-500 text-white font-bold hover:bg-red-600 cursor-pointer h-10 rounded-full w-full"
           >
-            <Phone /> End Meeting
+            <Phone className="size-4" /> End
+          </Button>
+
+          <Button
+            onClick={async () => {
+              if (meetingId) {
+                stopListening();
+                await deleteMeeting(meetingId);
+                navigate("/council-setup");
+              }
+            }}
+            className="bg-red-900 border border-red-500 text-white font-bold hover:bg-red-800 cursor-pointer h-10 w-10 p-0 rounded-full flex items-center justify-center"
+            title="Delete Meeting"
+          >
+            <Trash2 className="size-4" />
           </Button>
         </section>
       </div>

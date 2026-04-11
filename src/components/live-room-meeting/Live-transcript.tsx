@@ -53,7 +53,11 @@ export const LiveTranscript = () => {
                             <span className="text-white font-black mr-2 bg-white/5 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
                                {msg.sender}
                             </span>{" "}
-                            {msg.text}
+                            {msg.displayedText}
+                            {/* Blinking cursor while text is still being revealed */}
+                            {msg.displayedText !== msg.text && msg.displayedText !== "" && (
+                                <span className="inline-block w-1 h-3 bg-[#B6FF3B] ml-0.5 animate-pulse align-middle" />
+                            )}
                         </p>
                     </div>
                 ))}
