@@ -1,5 +1,7 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { useCouncilSetupStore } from "@/store/council-setup.store";
+import { useMeetingStore } from "@/store/meeting.store";
+import { cn } from "@/lib/utils";
 import {
   HoverCard,
   HoverCardContent,
@@ -32,9 +34,10 @@ import {
 
 export const AgentGroup = () => {
   const { agents } = useCouncilSetupStore();
-  const [windowWidth, setWindowWidth] = React.useState(0);
+  const { speakingAgent, participants } = useMeetingStore();
+  const [windowWidth, setWindowWidth] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -50,12 +53,12 @@ export const AgentGroup = () => {
     <div className="relative h-[320px] w-[320px] md:h-[400px] md:w-[400px] flex items-center justify-center scale-90 sm:scale-100 transition-transform duration-500">
       {/* Background Image Container */}
       <div
-        className="h-[200px] w-[200px] md:h-[250px] md:w-[250px] bg-cover bg-center bg-no-repeat rounded-full relative z-10 shadow-[0_0_60px_rgba(127,13,242,0.4)] border-4 border-white/10 overflow-hidden"
+        className="h-[200px] w-[200px] md:h-[250px] md:w-[250px] bg-cover bg-center bg-no-repeat rounded-full relative z-10 shadow-[0_0_60px_rgba(182,255,59,0.4)] border-4 border-white/10 overflow-hidden"
         style={{
           backgroundImage: "url('/council-over-img.png')",
         }}
       >
-        <div className="absolute inset-0 bg-linear-to-b from-transparent via-[#7F0DF2]/10 to-[#7F0DF2]/30"></div>
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-[#B6FF3B]/10 to-[#B6FF3B]/30"></div>
         <div className="border border-dashed border-white/20 rounded-full flex flex-col items-center justify-center h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
           <div className="rounded-full p-2 flex flex-col items-center justify-center h-5/6 w-5/6 bg-black/40 backdrop-blur-sm">
             <p className="text-white/60 text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">
@@ -71,7 +74,13 @@ export const AgentGroup = () => {
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius;
 
-        return <AgentItem key={agent.id} agent={agent} x={x} y={y} />;
+        const participant = participants?.find((p: any) => p.id === agent.id);
+        const agentName = participant?.name || "";
+        
+        const isCurrentlySpeaking = 
+          speakingAgent?.trim().toLowerCase() === agentName.trim().toLowerCase();
+
+        return <AgentItem key={agent.id} agent={agent} x={x} y={y} isSpeaking={isCurrentlySpeaking} />;
       })}
       <style>{`
         @keyframes float {
@@ -83,9 +92,9 @@ export const AgentGroup = () => {
   );
 };
 
-const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+const AgentItem = ({ agent, x, y, isSpeaking }: { agent: any; x: number; y: number; isSpeaking?: boolean }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
     <div
@@ -102,26 +111,34 @@ const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
       >
         <HoverCardTrigger asChild>
           <div className="relative pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95">
-            <div className="size-14 md:size-16 rounded-full border-2 border-[#7F0DF2]/60 p-0.5 bg-[#050505] backdrop-blur-xl shadow-2xl shadow-[#7F0DF2]/40 transition-all duration-500 group-hover:rotate-12 group-hover:border-[#7F0DF2] animate-[float_6s_ease-in-out_infinite] overflow-hidden">
+            <div className={cn(
+              "size-14 md:size-16 rounded-full border-2 p-0.5 bg-[#050505] backdrop-blur-xl transition-all duration-500 overflow-hidden",
+              isSpeaking 
+                ? "border-[#B6FF3B] shadow-[0_0_30px_#B6FF3B] scale-110 ring-4 ring-[#B6FF3B]/30 animate-pulse" 
+                : "border-[#B6FF3B]/60 shadow-2xl shadow-[#B6FF3B]/40 group-hover:rotate-12 group-hover:border-[#B6FF3B] animate-[float_6s_ease-in-out_infinite]"
+            )}>
               {agent.avatarUrl ? (
                 <img
                   src={agent.avatarUrl}
                   alt="Agent"
-                  className="w-full h-full object-cover rounded-full grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className={cn(
+                    "w-full h-full object-cover rounded-full transition-all duration-500",
+                    isSpeaking ? "grayscale-0" : "grayscale group-hover:grayscale-0"
+                  )}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-xs md:text-sm">
-                  {agent.id.slice(0, 1).toUpperCase()}
+                  {String(agent.id).slice(0, 1).toUpperCase()}
                 </div>
               )}
             </div>
           </div>
         </HoverCardTrigger>
         <HoverCardContent
-          side="top"
+          side="bottom"
           align="center"
           sideOffset={20}
-          className="w-64 p-3 bg-black/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(127,13,242,0.3)] animate-in fade-in zoom-in duration-300 pointer-events-auto"
+          className="w-64 p-3 bg-black/80 backdrop-blur-2xl border border-white/10 rounded-2xl animate-in fade-in zoom-in duration-300 pointer-events-auto"
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-white/5">
@@ -131,16 +148,31 @@ const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
                   Council Member
                 </h4>
               </div>
-              <div className="size-2 bg-[#7F0DF2] rounded-full animate-pulse" />
+              <div className="size-2 bg-[#B6FF3B] rounded-full animate-pulse" />
             </div>
 
             <div className="grid grid-cols-1 gap-1.5">
               {[
-                { icon: <FileText size={14} />, label: "Summarize Meeting" },
-                { icon: <Search size={14} />, label: "Research Topic" },
-                { icon: <Pin size={14} />, label: "Extract Action Items" },
-                { icon: <Lightbulb size={14} />, label: "Idea Generator" },
-                { icon: <MessageSquare size={14} />, label: "Ask the Meeting" },
+                {
+                  icon: <FileText size={14} color="#B6FF3B" />,
+                  label: "Summarize Meeting",
+                },
+                {
+                  icon: <Search size={14} color="#B6FF3B" />,
+                  label: "Research Topic",
+                },
+                {
+                  icon: <Pin size={14} color="#B6FF3B" />,
+                  label: "Extract Action Items",
+                },
+                {
+                  icon: <Lightbulb size={14} color="#B6FF3B" />,
+                  label: "Idea Generator",
+                },
+                {
+                  icon: <MessageSquare size={14} color="#B6FF3B" />,
+                  label: "Ask the Meeting",
+                },
               ].map((btn, i) => (
                 <Button
                   key={i}
@@ -176,20 +208,29 @@ const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
                 >
                   {[
                     {
-                      icon: <Mail size={14} />,
+                      icon: <Mail size={14} color="#B6FF3B" />,
                       label: "Send Summary to email",
                     },
-                    { icon: <Scale size={14} />, label: "Decision Tracker" },
-                    { icon: <Brain size={14} />, label: "Generate Ideas" },
                     {
-                      icon: <BarChart3 size={14} />,
+                      icon: <Scale size={14} color="#B6FF3B" />,
+                      label: "Decision Tracker",
+                    },
+                    {
+                      icon: <Brain size={14} color="#B6FF3B" />,
+                      label: "Generate Ideas",
+                    },
+                    {
+                      icon: <BarChart3 size={14} color="#B6FF3B" />,
                       label: "Analyze Sentiment",
                     },
-                    { icon: <FileJson size={14} />, label: "Generate Report" },
+                    {
+                      icon: <FileJson size={14} color="#B6FF3B" />,
+                      label: "Generate Report",
+                    },
                   ].map((item, i) => (
                     <DropdownMenuItem
                       key={i}
-                      className="flex items-center gap-3 px-3 py-2 text-[10px] font-bold text-white/70 focus:bg-[#7F0DF2]/10 focus:text-white rounded-lg cursor-pointer transition-colors"
+                      className="flex items-center gap-3 px-3 py-2 text-[10px] font-bold text-white/70 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5   rounded-lg cursor-pointer transition-colors"
                     >
                       <span className="text-[#7F0DF2]">{item.icon}</span>
                       {item.label}
@@ -201,7 +242,6 @@ const AgentItem = ({ agent, x, y }: { agent: any; x: number; y: number }) => {
           </div>
         </HoverCardContent>
       </HoverCard>
-
     </div>
   );
 };

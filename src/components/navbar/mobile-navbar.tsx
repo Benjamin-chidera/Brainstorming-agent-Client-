@@ -118,7 +118,7 @@ export const MobileNavbar = () => {
               ) : (
                 <div>
                   <Button
-                    className="bg-[#B6FF3B] text-[#0D1117] px-5 py-2 rounded-full font-semibold hover:bg-[#B6FF3B]/90 transition-colors text-sm cursor-pointer"
+                    className="bg-[#B6FF3B] text-[#0D1117] px-3 py-5 rounded-full font-semibold hover:bg-[#B6FF3B]/90 transition-colors text-sm cursor-pointer"
                     onClick={logout}
                   >
                     <LogOut />

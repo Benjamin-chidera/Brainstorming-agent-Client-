@@ -1,12 +1,28 @@
+import { useEffect, useRef } from "react";
+import { useMeetingStore } from "@/store/meeting.store";
+
+const formatTime = (ts: number) => {
+  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+};
+
 export const LiveTranscript = () => {
+  const { messages, isProcessing } = useMeetingStore();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isProcessing]);
+
   return (
-    <main className="glass p-5 rounded-3xl w-full max-w-[900px] h-[180px] mx-auto border border-white/5 shadow-2xl backdrop-blur-3xl group transition-all duration-500 overflow-hidden">
+    <main className="glass p-5 rounded-3xl w-full max-w-[900px] h-[220px] mx-auto border border-white/5 shadow-2xl backdrop-blur-3xl group transition-all duration-500 overflow-hidden hover:border-[#B6FF3B]">
       <div className="flex items-center justify-between mb-3 border-b border-white/10 pb-3">
         <h1 className="text-xs font-black text-white flex items-center gap-3 tracking-[0.2em] uppercase">
           <div className="flex items-end gap-0.5 h-4">
-            <div className="w-1 bg-[#7F0DF2] animate-[sound_0.8s_ease-in-out_infinite] h-2"></div>
-            <div className="w-1 bg-[#7F0DF2] animate-[sound_1.1s_ease-in-out_infinite] h-4"></div>
-            <div className="w-1 bg-[#7F0DF2] animate-[sound_0.9s_ease-in-out_infinite] h-3"></div>
+            <div className="w-1 bg-[#B6FF3B] animate-[sound_0.8s_ease-in-out_infinite] h-2"></div>
+            <div className="w-1 bg-[#B6FF3B] animate-[sound_1.1s_ease-in-out_infinite] h-4"></div>
+            <div className="w-1 bg-[#B6FF3B] animate-[sound_0.9s_ease-in-out_infinite] h-3"></div>
           </div>
           Live Transcript
         </h1>
@@ -18,42 +34,42 @@ export const LiveTranscript = () => {
           </div>
         </div>
       </div>
-      <div className="mt-1 overflow-y-auto h-[100px] text-[11px] text-white/70 leading-relaxed pr-2 space-y-4 scrollbar-hide">
-        <div className="flex gap-4 group/item">
-          <span className="text-[#7F0DF2] font-black whitespace-nowrap opacity-40 group-hover/item:opacity-100 transition-opacity">
-            09:41:22
-          </span>
-          <p>
-            <span className="text-white font-black mr-2 bg-white/5 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
-              Lead Agent
-            </span>{" "}
-            Welcome everyone. Let's begin the architectural synthesis for the
-            new autonomous framework.
-          </p>
-        </div>
-        <div className="flex gap-4 group/item">
-          <span className="text-cyan-400 font-black whitespace-nowrap opacity-40 group-hover/item:opacity-100 transition-opacity">
-            09:42:05
-          </span>
-          <p>
-            <span className="text-cyan-400 font-black mr-2 bg-cyan-400/5 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
-              Research Agent
-            </span>{" "}
-            Dataset processing complete. I've identified three critical entry
-            points for optimization in the neural pipeline.
-          </p>
-        </div>
-        <div className="flex gap-4 group/item opacity-50">
-          <span className="text-white/20 font-black whitespace-nowrap opacity-20">
-            09:43:10
-          </span>
-          <p>
-            <span className="text-white/40 font-black mr-2 bg-white/5 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
-              System
-            </span>{" "}
-            Cognitive bridge established. High-latency protocols avoided.
-          </p>
-        </div>
+      <div 
+        ref={scrollRef}
+        className="mt-1 overflow-y-auto h-[120px] text-[11px] text-white/70 leading-relaxed pr-2 space-y-4 scrollbar-hide"
+      >
+        {messages.length === 0 && !isProcessing ? (
+            <div className="h-full flex items-center justify-center opacity-30 text-xs">
+                Establishing communication link...
+            </div>
+        ) : (
+            <>
+                {messages.map((msg) => (
+                    <div key={msg.id} className="flex gap-4 group/item">
+                        <span className="text-[#7F0DF2] font-black whitespace-nowrap opacity-40 group-hover/item:opacity-100 transition-opacity">
+                            {formatTime(msg.timestamp)}
+                        </span>
+                        <p>
+                            <span className="text-white font-black mr-2 bg-white/5 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
+                               {msg.sender}
+                            </span>{" "}
+                            {msg.displayedText}
+                            {/* Blinking cursor while text is still being revealed */}
+                            {msg.displayedText !== msg.text && msg.displayedText !== "" && (
+                                <span className="inline-block w-1 h-3 bg-[#B6FF3B] ml-0.5 animate-pulse align-middle" />
+                            )}
+                        </p>
+                    </div>
+                ))}
+                {isProcessing && (
+                    <div className="flex gap-4 animate-pulse opacity-50">
+                        <span className="text-[#B6FF3B] font-black text-[10px] uppercase tracking-tighter italic">
+                            Agent is typing...
+                        </span>
+                    </div>
+                )}
+            </>
+        )}
       </div>
 
       <style>{`

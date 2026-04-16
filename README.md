@@ -1,73 +1,64 @@
-# React + TypeScript + Vite
+# Project Overview
+**BrainStorming-Agents (Client)** is the frontend application for orchestrating interactive AI-driven brainstorming sessions.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### What it does and key features
+- **Interactive UI**: Provides a modern, responsive interface for managing AI agent personas.
+- **Real-time Visualization**: Connects to WebSockets to stream live discussion transcripts between AI agents.
+- **Council Management**: Dynamic forms and components for creating and organizing agent councils.
 
-Currently, two official plugins are available:
+## Tech Stack
+- **Framework**: React 19 + Node.js
+- **Tooling**: Vite
+- **Styling & UI**: Tailwind CSS v4, Framer Motion, shadcn/ui
+- **State Management**: Zustand
+- **Real-time Sync**: Socket.IO Client
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+```text
+Client/
+├── src/
+│   ├── components/  # React components (UI elements)
+│   ├── store/       # Zustand state management
+│   ├── types/       # TypeScript type definitions
+│   └── main.tsx     # Application entry point
+├── package.json     # Project dependencies and scripts
+└── vite.config.ts   # Vite bundler configuration
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Description
+The client acts as the visual representation of the BrainStorming-Agents platform. It enables users to easily initiate multi-perspective AI brainstormings. The interface visually updates in real time utilizing smoothly animated transitions to render live markdown blocks as the autonomous AI meetings occur in the background.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Environment Variables
+This frontend interacts with a local backend server. No specific environment variables are strictly required for the client application to run in its default state, as it communicates out-of-the-box with `localhost:8000`.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Run Frontend
+1. Navigate to the `Client` directory:
+   ```bash
+   cd Client
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
+   _(The application will be running locally on http://localhost:5173)_
+
+## Key Features
+- **Live Transcript Parsing**: Watch generated thoughts dynamically stream and render Markdown.
+- **AI Persona Tuning UI**: Mix and match agent definitions via intuitive forms.
+- **Responsive Navigation**: Seamlessly switches between agent configurations and live meeting rooms.
+
+## Testing
+- **Frontend Testing**: Built atop `vitest`. Run tests inside the `Client/` directory via:
+  ```bash
+  npm run test
+  ```
+
+## Author
+_Your Name_
+
+## License
+MIT License

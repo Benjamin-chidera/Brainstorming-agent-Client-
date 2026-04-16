@@ -89,7 +89,7 @@ export const AgentCard = ({ agent }: AgentCardProps) => {
                     </div>
                   ) : (
                     <div className="size-10 rounded-full bg-[#B6FF3B]/10 flex items-center justify-center text-[#B6FF3B] text-xs font-black border border-[#B6FF3B]/20">
-                      {agent.id.slice(0, 2).toUpperCase()}
+                      {String(agent.id).slice(0, 2).toUpperCase()}
                     </div>
                   )}
                 </div>
@@ -127,7 +127,7 @@ export const AgentCard = ({ agent }: AgentCardProps) => {
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-5 flex-1 p-6 pt-0">
+          <CardContent className="space-y-5 flex-1 flex flex-col p-6 pt-0">
             <div className="space-y-1.5 flex-1 flex flex-col min-h-0 relative">
               <div className="flex justify-between items-center">
                 <label className="text-[9px] font-bold text-[#8B949E] border-l-2 border-[#B6FF3B] pl-1.5 ml-0.5 uppercase tracking-tighter">
@@ -153,7 +153,7 @@ export const AgentCard = ({ agent }: AgentCardProps) => {
                     : "Type or tap the mic to speak..."
                 }
                 className={cn(
-                  "flex-1 min-h-[140px] w-full bg-white/3 border rounded-md p-3 pr-12 text-xs text-white placeholder:text-gray-700 focus:outline-none focus:bg-white/5 transition-all resize-none",
+                  "flex-1 min-h-[140px] w-full bg-white/3 border rounded-md p-3 pr-12 text-xs text-white placeholder:text-gray-700 focus:outline-none focus:bg-white/5 transition-all resize-none overflow-y-auto custom-scrollbar",
                   isListening
                     ? "border-[#B6FF3B]/40 bg-[#B6FF3B]/5 shadow-[inset_0_0_20px_rgba(182,255,59,0.05)]"
                     : "border-white/5 focus:border-[#B6FF3B]/30"

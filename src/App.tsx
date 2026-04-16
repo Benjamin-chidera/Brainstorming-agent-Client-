@@ -22,7 +22,7 @@ function App() {
   }, []);
   
   return (
-    <main className=" pt-5">
+    <main className=" pt-20">
       <div
         className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
         style={{
@@ -58,7 +58,7 @@ function App() {
 
           <Route element={<Protect isAuth={isAuth} />}>
             <Route path="/council-setup" element={<CouncilSetup />} />
-            <Route path="/live-meeting-room" element={<LiveMeetingRoom />} />
+            <Route path="/live-meeting-room/:meetingId" element={<LiveMeetingRoom />} />
           </Route>
         </Routes>
       </BrowserRouter>
