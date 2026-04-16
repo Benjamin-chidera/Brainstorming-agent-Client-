@@ -11,6 +11,7 @@ import { PowerIcon, X, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useMeetingStore } from "@/store/meeting.store";
+import { useAuthStore } from "@/store/auth.store";
 import { toast } from "sonner";
 
 export const CouncilOverview = () => {
@@ -23,6 +24,7 @@ export const CouncilOverview = () => {
   } = useCouncilSetupStore();
 
   const { startMeeting, checkActiveMeeting } = useMeetingStore();
+  const { user } = useAuthStore();
 
   console.log(isMeetingStarted);
   
@@ -35,7 +37,6 @@ export const CouncilOverview = () => {
 
   const [radius, setRadius] = useState(200);
   const [hoveredAgentId, setHoveredAgentId] = useState<string | null>(null);
-  const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -57,7 +58,7 @@ export const CouncilOverview = () => {
     }
 
     const agentIds = validAgents.map((agent) => agent.id);
-    const meetingId = await startMeeting(agentIds, userName);
+    const meetingId = await startMeeting(agentIds, (user as any)?.full_name);
     if (meetingId && validAgents.length === agents.length) {
       navigate(`/live-meeting-room/${meetingId}`);
     }else{
@@ -98,7 +99,7 @@ export const CouncilOverview = () => {
         open={showCouncilOverview}
         onOpenChange={setShowCouncilOverview}
       >
-        <AlertDialogContent className="glass max-w-none w-75 md:w-screen h-[40vh] md:h-[70vh] p-0 overflow-hidden border-none shadow-2xl flex items-center justify-center">
+        <AlertDialogContent className="glass max-w-none w-full md:w-screen h-[40vh] md:h-[70vh] p-0 overflow-hidden border-none shadow-2xl flex items-center justify-center">
           <div className="relative flex items-center justify-center scale-90 sm:scale-100">
             {/* Background Image Container */}
             <div
@@ -114,16 +115,6 @@ export const CouncilOverview = () => {
               <div className="border border-dashed border-white/10 rounded-full flex flex-col items-center justify-center h-[200px] w-[200px] sm:h-[260px] sm:w-[260px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <div className="shadow-[0_0_50px_rgba(182,255,59,0.2)] border border-white/10 rounded-full p-4 flex flex-col items-center justify-center h-[180px] w-[180px] sm:h-[230px] sm:w-[230px] gap-2">
                   <PowerIcon size={20} className="text-[#B6FF3B] mb-1 shrink-0" />
-                  {!isMeetingStarted && (
-                    <input
-                      type="text"
-                      className="bg-black/50 border border-white/10 text-white text-[10px] sm:text-xs rounded-full px-3 py-1 w-[90%] text-center outline-none focus:border-[#B6FF3B]/50 h-7 sm:h-8 shrink-0"
-                      placeholder="Your Name (Optional)"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  )}
                   <Button
                     className="bg-[#B6FF3B] text-[#0D1117] font-bold hover:bg-[#B6FF3B]/90 cursor-pointer h-8 sm:h-9 rounded-full w-[90%] text-[10px] sm:text-xs shrink-0"
                     onClick={handleStartOrContinue}
@@ -169,7 +160,7 @@ export const CouncilOverview = () => {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-[#B6FF3B] font-black text-[10px] sm:text-xs">
-                          {agent.id.slice(0, 2).toUpperCase()}
+                          {String(agent.id).slice(0, 2).toUpperCase()}
                         </div>
                       )}
                     </div>

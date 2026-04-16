@@ -4,6 +4,7 @@ import { AgentCard } from "./agent-card";
 import { Button } from "../ui/button";
 import { Rocket, Users } from "lucide-react";
 import { Spinner } from "../ui/spinner";
+import { MobileAgentCard } from "./mobile-agent-card";
 
 export const AgentPods = () => {
   const {
@@ -69,11 +70,21 @@ export const AgentPods = () => {
           )}
         </div>
 
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
-          {agents.map((agent) => (
-            <AgentCard key={agent.id} agent={agent} />
-          ))}
-        </div>
+        <section>
+          <div>
+            {/* this is for large screen */}
+            <div className="hidden md:grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+              {agents.map((agent) => (
+                <AgentCard key={agent.id} agent={agent} />
+              ))}
+            </div>
+          </div>
+
+          <div className="lg:hidden">
+            {/* this is for small screen */}
+            <MobileAgentCard />
+          </div>
+        </section>
       </div>
     </main>
   );

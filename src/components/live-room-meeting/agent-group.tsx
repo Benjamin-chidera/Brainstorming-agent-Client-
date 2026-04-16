@@ -128,7 +128,7 @@ const AgentItem = ({ agent, x, y, isSpeaking }: { agent: any; x: number; y: numb
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-[#7F0DF2] font-black text-xs md:text-sm">
-                  {agent.id.slice(0, 1).toUpperCase()}
+                  {String(agent.id).slice(0, 1).toUpperCase()}
                 </div>
               )}
             </div>

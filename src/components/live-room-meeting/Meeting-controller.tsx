@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useMeetingStore } from "@/store/meeting.store";
 import { Mic, MicOff, Phone, Share, Video, Send, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,20 +22,40 @@ export const MeetingController = () => {
 
   const navigate = useNavigate();
 
-  /** Tell the server to pause the autonomous loop the moment the user starts interacting. */
+  /** Tell the server to pause the autonomous loop. */
   const notifyTyping = () => {
     if (meetingId) socket.emit("user_typing", { meeting_id: meetingId });
   };
 
+  // While the user is speaking, keep sending user_typing every 800ms so the
+  // autonomous agent loop stays paused for the whole duration of their turn.
+  const typingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startTypingHeartbeat = () => {
+    if (typingIntervalRef.current) return; // already running
+    notifyTyping();
+    typingIntervalRef.current = setInterval(notifyTyping, 800);
+  };
+
+  const stopTypingHeartbeat = () => {
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+    }
+  };
+
   const { isActive, isSpeaking, startListening, stopListening } =
     useVoiceRecorder({
-      onAudioReady: (blob) => sendAudio(blob),
+      onAudioReady: (blob) => {
+        stopTypingHeartbeat(); // user finished speaking — let agents respond
+        sendAudio(blob);
+      },
       onSpeechStart: () => {
-        stopAgentAudio();   // stop any playing agent audio immediately
-        notifyTyping();     // pause autonomous loop so agents don't interrupt
+        stopAgentAudio();        // cut agent audio the moment the user speaks
+        startTypingHeartbeat();  // keep the autonomous loop paused until they're done
       },
       silenceThreshold: 0.05,
-      silenceDuration: 1000,
+      silenceDuration: 2500,   // wait 2.5s of silence before treating speech as done
     });
 
   const handleSend = () => {
@@ -46,8 +67,12 @@ export const MeetingController = () => {
   };
 
   const handleMicClick = () => {
-    if (isActive) stopListening();
-    else startListening();
+    if (isActive) {
+      stopTypingHeartbeat();
+      stopListening();
+    } else {
+      startListening();
+    }
   };
 
   return (
@@ -147,6 +172,7 @@ export const MeetingController = () => {
         <section className="flex gap-2">
           <Button
             onClick={() => {
+              stopTypingHeartbeat();
               stopListening();
               endMeeting();
 
@@ -162,6 +188,7 @@ export const MeetingController = () => {
           <Button
             onClick={async () => {
               if (meetingId) {
+                stopTypingHeartbeat();
                 stopListening();
                 await deleteMeeting(meetingId);
                 navigate("/council-setup");

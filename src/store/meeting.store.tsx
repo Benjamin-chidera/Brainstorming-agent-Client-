@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { socket } from "./socket.io";
+import { socket, useSocketStore } from "./socket.io";
 import axios from "axios";
 import { useCouncilSetupStore } from "./council-setup.store";
 import { toast } from "sonner";
@@ -40,6 +40,9 @@ interface MeetingState {
   addMessage: (msg: MeetingMessage) => void;
   initSocketListeners: (mid: string) => void;
   setMeetingUrl: (url: string) => void;
+
+  inviteModal: boolean;
+  setInviteModal: (val: boolean) => void;
 }
 
 // ── Agent audio playback queue ────────────────────────────────────────────────
@@ -202,6 +205,8 @@ function _enqueueAudio(b64: string, sender: string) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const useMeetingStore = create<MeetingState>((set, get) => ({
+  inviteModal: false,
+  setInviteModal: (val: boolean) => set({ inviteModal: val }),
   meetingId: null,
   meetingUrl: null,
   messages: [],
@@ -331,6 +336,14 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
     socket.off("system_message");
     socket.off("meeting_ended");
     socket.off("agent_audio");
+    socket.off("connect");
+
+    // Re-join the room on every (re)connection so responses reach the client
+    // after a socket disconnect/reconnect cycle.
+    socket.on("connect", () => {
+      useSocketStore.getState().setIsConnected(true);
+      socket.emit("join_meeting", { meeting_id: mid });
+    });
 
     // Spec: Connect Socket.IO and EMIT join_meeting.
     socket.emit("join_meeting", { meeting_id: mid });

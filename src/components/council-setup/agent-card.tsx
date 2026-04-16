@@ -89,7 +89,7 @@ export const AgentCard = ({ agent }: AgentCardProps) => {
                     </div>
                   ) : (
                     <div className="size-10 rounded-full bg-[#B6FF3B]/10 flex items-center justify-center text-[#B6FF3B] text-xs font-black border border-[#B6FF3B]/20">
-                      {agent.id.slice(0, 2).toUpperCase()}
+                      {String(agent.id).slice(0, 2).toUpperCase()}
                     </div>
                   )}
                 </div>

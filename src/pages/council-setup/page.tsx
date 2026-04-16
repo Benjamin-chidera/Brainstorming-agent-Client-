@@ -15,7 +15,7 @@ export default function CouncilSetup() {
   return (
     <main className="2xl:container w-11/12 mx-auto">
       {/* Header Badge */}
-      <div className="glass w-56 h-8.5 rounded-full flex items-center justify-center gap-2 text-[#B6FF3B] font-semibold uppercase mt-10">
+      <div className="glass w-56 h-8.5 rounded-full flex items-center justify-center gap-2 text-[#B6FF3B] font-semibold uppercase md:mt-10">
         <svg
           width="13"
           height="13"
@@ -32,7 +32,7 @@ export default function CouncilSetup() {
       </div>
 
       {/* Title Section */}
-      <div className="my-7 space-y-2">
+      <div className="my-4 md:my-7 space-y-2">
         <h1 className="text-2xl md:text-3xl font-bold text-white">
           Configure Your <span className="text-[#B6FF3B]">Council.</span>
         </h1>

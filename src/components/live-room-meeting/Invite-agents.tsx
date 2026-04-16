@@ -4,10 +4,11 @@ import { MuteBtn } from "./Mute-btn";
 import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { InviteModal } from "./invite-modal";
 
 export const InviteAgents = () => {
   const { agents } = useCouncilSetupStore();
-  const { mutedAgents } = useMeetingStore();
+  const { mutedAgents, setInviteModal } = useMeetingStore();
 
   return (
     <main className="w-full max-w-[400px] lg:max-w-none">
@@ -76,13 +77,17 @@ export const InviteAgents = () => {
 
         {agents.length < 10 && (
           <div className="p-2 border-t border-white/5">
-            <Button className="text-xs text-black font-bold h-9 cursor-pointer w-full bg-[#B6FF3B] hover:bg-[#B6FF3B]/90 transition-all rounded-xl shadow-[0_0_15px_rgba(127,13,242,0.3)]">
+            <Button className="text-xs text-black font-bold h-9 cursor-pointer w-full bg-[#B6FF3B] hover:bg-[#B6FF3B]/90 transition-all rounded-xl shadow-[0_0_15px_rgba(127,13,242,0.3)]"
+              onClick={() => setInviteModal(true)}
+            >
               <Plus size={16} />
-              <span>Invite Agent</span>
+              <span>Invite a member</span>
             </Button>
           </div>
         )}
       </section>
+
+      <InviteModal />
     </main>
   );
 };
