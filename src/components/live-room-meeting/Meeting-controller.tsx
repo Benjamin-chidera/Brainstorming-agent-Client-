@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useMeetingStore } from "@/store/meeting.store";
-import { Mic, MicOff, Phone, Share, Video, Send, Trash2 } from "lucide-react";
+import { Mic, MicOff, Phone, Share, Video, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
@@ -15,7 +15,6 @@ export const MeetingController = () => {
     sendAudio,
     stopAgentAudio,
     endMeeting,
-    deleteMeeting,
     meetingId,
     isProcessing,
   } = useMeetingStore();
@@ -122,7 +121,7 @@ export const MeetingController = () => {
       </div>
 
       {/* Meeting controls */}
-      <div className="glass p-2 md:p-4 md:rounded-full rounded-full w-full md:w-[350px] h-[70px] flex justify-between items-center bg-black/40 backdrop-blur-xl">
+      <div className="glass p-2 md:p-4 md:rounded-full rounded-full w-full md:w-[350px] h-[70px] flex justify-between items-center gap-3 bg-black/40 backdrop-blur-xl">
         <section className="flex items-center justify-between gap-3">
           <div>
             <Button className="glass rounded-full h-9 w-9" disabled>
@@ -169,7 +168,7 @@ export const MeetingController = () => {
 
         <div className="h-10 w-0.5 bg-gray-600 hidden md:block" />
 
-        <section className="flex gap-2">
+        <section className="w-full">
           <Button
             onClick={() => {
               stopTypingHeartbeat();
@@ -185,7 +184,7 @@ export const MeetingController = () => {
             <Phone className="size-4" /> End
           </Button>
 
-          <Button
+          {/* <Button
             onClick={async () => {
               if (meetingId) {
                 stopTypingHeartbeat();
@@ -198,7 +197,7 @@ export const MeetingController = () => {
             title="Delete Meeting"
           >
             <Trash2 className="size-4" />
-          </Button>
+          </Button> */}
         </section>
       </div>
     </main>
