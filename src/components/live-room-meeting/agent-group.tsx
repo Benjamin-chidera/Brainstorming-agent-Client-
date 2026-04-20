@@ -35,10 +35,9 @@ import {
 export const AgentGroup = () => {
   const { agents } = useCouncilSetupStore();
   const { speakingAgent, participants } = useMeetingStore();
-  const [windowWidth, setWindowWidth] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

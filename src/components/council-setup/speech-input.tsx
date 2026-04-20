@@ -30,17 +30,7 @@ export const SpeechInput = ({
   const streamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number>(0);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      stopAudioAnalysis();
-      if (mediaRecorderRef.current?.state === "recording") {
-        mediaRecorderRef.current.stop();
-      }
-    };
-  }, []);
 
-  // ─── Audio Analysis (for Glow visualization) ───────────────────────
   const startAudioAnalysis = useCallback(
     (stream: MediaStream) => {
       try {
@@ -87,6 +77,15 @@ export const SpeechInput = ({
     analyserRef.current = null;
     onVolumeChange(0);
   }, [onVolumeChange]);
+
+  useEffect(() => {
+    return () => {
+      stopAudioAnalysis();
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, [stopAudioAnalysis]);
 
   // ─── Transcription via Whisper API ─────────────────────────────────
   const transcribeAudio = useCallback(

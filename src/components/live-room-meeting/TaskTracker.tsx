@@ -50,9 +50,9 @@ const TASKS: Task[] = [
   },
 ];
 
-const formatDuration = (start?: number, end?: number) => {
+const formatDuration = (start?: number, end?: number, now?: number) => {
   if (!start) return "0:00";
-  const durationMs = (end || Date.now()) - start;
+  const durationMs = (end || now || Date.now()) - start;
   const totalSeconds = Math.max(0, Math.floor(durationMs / 1000));
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
@@ -60,10 +60,8 @@ const formatDuration = (start?: number, end?: number) => {
 };
 
 export const TaskTracker = () => {
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   const [viewResultDialog, setViewResultDialog] = useState(false);
-
-  console.log(now);
 
   useEffect(() => {
     const hasActiveTask = TASKS.some((t) => t.status === "in-progress");
@@ -120,7 +118,7 @@ export const TaskTracker = () => {
                     </h4>
                     <p className="text-[10px] text-white/40 font-medium">
                       Duration:{" "}
-                      {formatDuration(task.startedAt, task.completedAt)}
+                      {formatDuration(task.startedAt, task.completedAt, now)}
                     </p>
                   </div>
                 </div>
