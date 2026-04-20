@@ -19,7 +19,7 @@ function App() {
   
   useEffect(() => {
     getUser();
-  }, []);
+  }, [getUser]);
   
   return (
     <main className=" pt-20">

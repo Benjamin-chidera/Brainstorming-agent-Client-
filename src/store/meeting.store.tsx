@@ -69,7 +69,7 @@ function _stopAgentAudio() {
   _revealIntervals.forEach(clearInterval);
   _revealIntervals.length = 0;
   _flushPendingTranscripts();
-  try { _currentSource?.stop(); } catch {}
+  try { _currentSource?.stop(); } catch { /* ignore */ }
   _currentSource = null;
   if (_currentCtx) { _currentCtx.close(); _currentCtx = null; }
   _isPlaying = false;

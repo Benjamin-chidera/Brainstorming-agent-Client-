@@ -51,37 +51,39 @@ export function useVoiceRecorder({
   // stale-closure issues.
   const startRecorderRef = useRef<() => void>(() => {});
 
-  startRecorderRef.current = () => {
-    if (!isActiveRef.current || !streamRef.current) return;
+  useEffect(() => {
+    startRecorderRef.current = () => {
+      if (!isActiveRef.current || !streamRef.current) return;
 
-    const mimeType = mimeTypeRef.current;
-    const recorder = new MediaRecorder(streamRef.current, { mimeType });
-    recorderRef.current = recorder;
-    chunksRef.current   = [];
+      const mimeType = mimeTypeRef.current;
+      const recorder = new MediaRecorder(streamRef.current, { mimeType });
+      recorderRef.current = recorder;
+      chunksRef.current   = [];
 
-    recorder.ondataavailable = (e) => {
-      if (e.data.size > 0) chunksRef.current.push(e.data);
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      let startTime = 0;
+      recorder.onstart = () => { startTime = Date.now(); };
+
+      recorder.onstop = () => {
+        const duration = Date.now() - startTime;
+        const blob = new Blob(chunksRef.current, { type: mimeType });
+        chunksRef.current = [];
+        
+        // Filter out segments shorter than 500ms (likely noise like a bark or cough)
+        if (duration > 500 && blob.size > 2000) {
+          onAudioReadyRef.current(blob);
+        }
+        
+        // Immediately start the next recording segment if still listening
+        startRecorderRef.current();
+      };
+
+      recorder.start(250);
     };
-
-    let startTime = 0;
-    recorder.onstart = () => { startTime = Date.now(); };
-
-    recorder.onstop = () => {
-      const duration = Date.now() - startTime;
-      const blob = new Blob(chunksRef.current, { type: mimeType });
-      chunksRef.current = [];
-      
-      // Filter out segments shorter than 500ms (likely noise like a bark or cough)
-      if (duration > 500 && blob.size > 2000) {
-        onAudioReadyRef.current(blob);
-      }
-      
-      // Immediately start the next recording segment if still listening
-      startRecorderRef.current();
-    };
-
-    recorder.start(250);
-  };
+  }, []);
 
   // ── VAD loop ───────────────────────────────────────────────────────────────
   const startVAD = useCallback(() => {

@@ -103,7 +103,7 @@ export const useCouncilSetupStore = create<CouncilSetupState>((set, get) => ({
 
     if (!targetAgent) return;
 
-    let finalUpdates = { ...updates };
+    const finalUpdates = { ...updates };
 
     if (updates.voice && updates.voice !== targetAgent.voice) {
       const newGender = VOICE_GENDER_MAPPING[updates.voice] || "female";
