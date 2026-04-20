@@ -93,7 +93,7 @@ export const InviteModal = () => {
               <section className="flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
                 <div
                   onClick={handleOpenAiInvite}
-                  className="glass w-full h-[200px] p-5 rounded-2xl overflow-hidden border border-white/10 shadow-lg hover:border-[#B6FF3B] cursor-pointer transition-colors"
+                  className="glass w-full md:h-[200px] p-5 rounded-2xl overflow-hidden border border-white/10 shadow-lg hover:border-[#B6FF3B] cursor-pointer transition-colors"
                 >
                   <div>
                     <div className="border border-white/20 w-fit p-2 rounded-full mb-3 text-white">
@@ -112,7 +112,7 @@ export const InviteModal = () => {
 
                 <div
                   onClick={() => setInviteType("team")}
-                  className="glass w-full h-[200px] p-5 rounded-2xl overflow-hidden border border-white/10 shadow-lg hover:border-[#B6FF3B] cursor-pointer transition-colors"
+                  className="glass w-full md:h-[200px] p-5 rounded-2xl overflow-hidden border border-white/10 shadow-lg hover:border-[#B6FF3B] cursor-pointer transition-colors"
                 >
                   <div>
                     <div className="border border-white/20 w-fit p-2 rounded-full mb-3 text-white">
