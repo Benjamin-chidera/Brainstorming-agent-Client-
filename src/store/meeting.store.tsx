@@ -12,9 +12,23 @@ interface MeetingMessage {
   timestamp: number;
 }
 
+export interface ActiveTask {
+  id: string;
+  title: string;
+  agentName: string;
+  agentId: string;
+  type: string;           // e.g. "summarize", "research", "action_items"
+  status: "pending" | "in-progress" | "completed";
+  progress: number;       // 0–100
+  result?: string;        // final output text when completed
+  startedAt: number;
+  completedAt?: number;
+}
+
 interface MeetingState {
   startMeeting: (agentIds: string[], userName?: string) => Promise<string | null>;
   checkActiveMeeting: () => Promise<boolean>;
+  requestSummary: (agentId: string, agentName: string) => void;
   fetchMeetingDetails: (id: string) => Promise<boolean>;
   endMeeting: () => Promise<void>;
   deleteMeeting: (id: string) => Promise<boolean>;
@@ -36,6 +50,12 @@ interface MeetingState {
   setSpeakingAgent: (name: string | null) => void;
   setIsRecording: (val: boolean) => void;
   toggleMuteAgent: (agentId: string) => void;
+
+  // Task tracking
+  activeTasks: ActiveTask[];
+  addTask: (task: ActiveTask) => void;
+  updateTask: (taskId: string, updates: Partial<ActiveTask>) => void;
+  removeTask: (taskId: string) => void;
 
   addMessage: (msg: MeetingMessage) => void;
   initSocketListeners: (mid: string) => void;
@@ -224,6 +244,43 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
   setIsRecording: (val) => set({ isRecording: val }),
   stopAgentAudio: () => _stopAgentAudio(),
 
+  // Task tracking
+  activeTasks: [],
+  addTask: (task) => set((state) => ({ activeTasks: [...state.activeTasks, task] })),
+  updateTask: (taskId, updates) => set((state) => ({
+    activeTasks: state.activeTasks.map((t) =>
+      t.id === taskId ? { ...t, ...updates } : t
+    ),
+  })),
+  removeTask: (taskId) => set((state) => ({
+    activeTasks: state.activeTasks.filter((t) => t.id !== taskId),
+  })),
+
+  requestSummary: (agentId: string, agentName: string) => {
+    const { meetingId } = get();
+    if (!meetingId) return;
+
+    const taskId = crypto.randomUUID();
+
+    // Add a tracked task immediately
+    get().addTask({
+      id: taskId,
+      title: "Summarizing Meeting",
+      agentName,
+      agentId,
+      type: "summarize",
+      status: "in-progress",
+      progress: 10,
+      startedAt: Date.now(),
+    });
+
+    socket.emit("summarize_meeting_request", {
+      meeting_id: meetingId,
+      agent_id: agentId,
+      task_id: taskId,
+    });
+  },
+
   toggleMuteAgent: (agentId) => {
     const { meetingId, mutedAgents } = get();
     const next = new Set(mutedAgents);
@@ -336,6 +393,7 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
     socket.off("system_message");
     socket.off("meeting_ended");
     socket.off("agent_audio");
+    socket.off("task_progress");
     socket.off("connect");
 
     // Re-join the room on every (re)connection so responses reach the client
@@ -398,6 +456,16 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
 
     socket.on("agent_audio", (data: { sender: string; audio: string }) => {
       if (data.audio) _enqueueAudio(data.audio, data.sender);
+    });
+
+    socket.on("task_progress", (data: { task_id: string; status: string; progress: number; result?: string }) => {
+      const updates: Partial<ActiveTask> = {
+        status: data.status as ActiveTask["status"],
+        progress: data.progress,
+      };
+      if (data.result) updates.result = data.result;
+      if (data.status === "completed") updates.completedAt = Date.now();
+      get().updateTask(data.task_id, updates);
     });
   },
 
@@ -503,6 +571,7 @@ export const useMeetingStore = create<MeetingState>((set, get) => ({
       isProcessing: false,
       speakingAgent: null,
       mutedAgents: new Set<string>(),
+      activeTasks: [],
     });
     
     socket.emit("end_meeting", { meetingId });

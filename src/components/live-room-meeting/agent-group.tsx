@@ -94,6 +94,46 @@ export const AgentGroup = () => {
 const AgentItem = ({ agent, x, y, isSpeaking }: { agent: any; x: number; y: number; isSpeaking?: boolean }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { requestSummary, activeTasks, participants } = useMeetingStore();
+
+  // Resolve the agent's display name from participants
+  const participant = participants?.find((p: any) => p.id === agent.id);
+  const agentName = participant?.name || agent.name || String(agent.id);
+
+  // Derive summarizing state from active tasks instead of local state
+  const isSummarizing = activeTasks.some(
+    (t) => t.agentId === String(agent.id) && t.type === "summarize" && t.status !== "completed"
+  );
+
+  const handleSummarize = () => {
+    if (isSummarizing) return;
+    requestSummary(String(agent.id), agentName);
+  };
+
+  const actionButtons = [
+    {
+      icon: <FileText size={14} color={isSummarizing ? "#0D1117" : "#B6FF3B"} />,
+      label: isSummarizing ? "Summarizing..." : "Summarize Meeting",
+      onClick: handleSummarize,
+      active: isSummarizing,
+    },
+    {
+      icon: <Search size={14} color="#B6FF3B" />,
+      label: "Research Topic",
+    },
+    {
+      icon: <Pin size={14} color="#B6FF3B" />,
+      label: "Extract Action Items",
+    },
+    {
+      icon: <Lightbulb size={14} color="#B6FF3B" />,
+      label: "Idea Generator",
+    },
+    {
+      icon: <MessageSquare size={14} color="#B6FF3B" />,
+      label: "Ask the Meeting",
+    },
+  ];
 
   return (
     <div
@@ -151,41 +191,32 @@ const AgentItem = ({ agent, x, y, isSpeaking }: { agent: any; x: number; y: numb
             </div>
 
             <div className="grid grid-cols-1 gap-1.5">
-              {[
-                {
-                  icon: <FileText size={14} color="#B6FF3B" />,
-                  label: "Summarize Meeting",
-                },
-                {
-                  icon: <Search size={14} color="#B6FF3B" />,
-                  label: "Research Topic",
-                },
-                {
-                  icon: <Pin size={14} color="#B6FF3B" />,
-                  label: "Extract Action Items",
-                },
-                {
-                  icon: <Lightbulb size={14} color="#B6FF3B" />,
-                  label: "Idea Generator",
-                },
-                {
-                  icon: <MessageSquare size={14} color="#B6FF3B" />,
-                  label: "Ask the Meeting",
-                },
-              ].map((btn, i) => (
+              {actionButtons.map((btn, i) => (
                 <Button
                   key={i}
                   variant="ghost"
-                  className="h-9 justify-start gap-3 px-3 text-[10px] font-bold text-white/70 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5 rounded-xl transition-all duration-300 group/btn"
+                  onClick={btn.onClick}
+                  disabled={btn.active}
+                  className={cn(
+                    "h-9 justify-start gap-3 px-3 text-[10px] font-bold rounded-xl transition-all duration-300 group/btn",
+                    btn.active
+                      ? "bg-[#B6FF3B]/20 text-[#B6FF3B] border border-[#B6FF3B]/30"
+                      : "text-white/70 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/5"
+                  )}
                 >
-                  <span className="text-[#7F0DF2] group-hover/btn:scale-110 transition-transform">
+                  <span className={cn(
+                    "transition-transform",
+                    btn.active ? "animate-spin" : "text-[#7F0DF2] group-hover/btn:scale-110"
+                  )}>
                     {btn.icon}
                   </span>
                   {btn.label}
-                  <ChevronRight
-                    size={12}
-                    className="ml-auto opacity-0 group-hover/btn:opacity-40 -translate-x-2 group-hover/btn:translate-x-0 transition-all"
-                  />
+                  {!btn.active && (
+                    <ChevronRight
+                      size={12}
+                      className="ml-auto opacity-0 group-hover/btn:opacity-40 -translate-x-2 group-hover/btn:translate-x-0 transition-all"
+                    />
+                  )}
                 </Button>
               ))}
 
